@@ -1,0 +1,9 @@
+h2{
+    margin: 0;
+}
+.kpi-container{
+    padding: 20px 0px;
+    width: 100%;
+    display: flex;
+    gap: 20px
+}

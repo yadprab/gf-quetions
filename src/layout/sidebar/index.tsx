@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import "./styles.css"
+import "./styles.css";
 
 export const SideBar = () => {
   return (
@@ -9,6 +9,9 @@ export const SideBar = () => {
       </NavLink>
       <NavLink to="/dashboard" className="nav-link">
         Dashboard
+      </NavLink>
+      <NavLink to="/invoices" className="nav-link">
+        Invoices
       </NavLink>
       <NavLink to="/customers" className="nav-link">
         Customers
