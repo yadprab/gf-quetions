@@ -98,25 +98,6 @@ export const DataTableContainer = ({
 
       setInvoices(processedInvoices);
       setLastUpdated(new Date());
-
-      // Simulate collaborators
-      const simulatedCollaborators = {};
-      const actions = ["editing", "reviewing", "commenting on"];
-      const names = [
-        "Alex Johnson",
-        "Sam Wilson",
-        "Taylor Smith",
-        "Jordan Lee",
-      ];
-
-      processedInvoices.slice(0, 3).forEach((invoice) => {
-        simulatedCollaborators[invoice.id] = {
-          name: names[Math.floor(Math.random() * names.length)],
-          action: actions[Math.floor(Math.random() * actions.length)],
-        };
-      });
-
-      setCollaborators(simulatedCollaborators);
       setError(null);
     } catch (err) {
       console.error("Error fetching invoices:", err);
@@ -125,6 +106,24 @@ export const DataTableContainer = ({
       setLoading(false);
     }
   }, [page, pageSize]);
+
+  const fetchCollaborators = useCallback(async () => {
+    if (invoices.length === 0) return;
+    const simulatedCollaborators = {};
+    const actions = ["editing", "reviewing", "commenting on"];
+    const names = ["Alex Johnson", "Sam Wilson", "Taylor Smith", "Jordan Lee"];
+
+    invoices.slice(0, 3).forEach((invoice) => {
+      if (Math.random() > 0.5) {
+        simulatedCollaborators[invoice.id] = {
+          name: names[Math.floor(Math.random() * names.length)],
+          action: actions[Math.floor(Math.random() * actions.length)],
+        };
+      }
+    });
+
+    setCollaborators(simulatedCollaborators);
+  }, [invoices]);
 
   // Handle sorting
   const handleSort = (key) => {
@@ -414,6 +413,14 @@ export const DataTableContainer = ({
   useEffect(() => {
     fetchInvoices();
   }, [fetchInvoices]);
+
+  // Mocking Realtime Collaborator information (By Polling)
+  useEffect(() => {
+    fetchCollaborators(); 
+    const intervalId = setInterval(fetchCollaborators, 5000); 
+
+    return () => clearInterval(intervalId); 
+  }, [fetchCollaborators]);
 
   // Render loading state
   if (loading && invoices.length === 0) {
