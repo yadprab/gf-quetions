@@ -1,0 +1,51 @@
+export const mockInvoices = [
+  {
+    id: 'INV-001',
+    customer: { name: 'Acme Inc.' },
+    amount: 1250.75,
+    dueDate: '2025-07-25',
+    status: 'pending',
+  },
+  {
+    id: 'INV-002',
+    customer: { name: 'Stark Industries' },
+    amount: 2500.00,
+    dueDate: '2025-07-20',
+    status: 'paid',
+  },
+  {
+    id: 'INV-003',
+    customer: { name: 'Wayne Enterprises' },
+    amount: 800.50,
+    dueDate: '2025-06-15',
+    status: 'overdue',
+  },
+  {
+    id: 'INV-004',
+    customer: { name: 'Cyberdyne Systems' },
+    amount: 5400.00,
+    dueDate: '2025-08-01',
+    status: 'draft',
+  },
+    {
+    id: 'INV-005',
+    customer: { name: 'Ollivanders Wand Shop' },
+    amount: 75.00,
+    dueDate: '2025-07-28',
+    status: 'pending',
+  },
+  {
+    id: 'INV-006',
+    customer: { name: 'Gekko & Co' },
+    amount: 3200.00,
+    dueDate: '2025-05-10',
+    status: 'overdue',
+  },
+  {
+    id: 'INV-007',
+    customer: { name: 'Buy n Large' },
+    amount: 150.25,
+    dueDate: '2025-07-22',
+    status: 'paid',
+  },
+];
