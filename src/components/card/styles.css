@@ -1,0 +1,45 @@
+.card {
+  border-radius: 8px;
+  border: 1px solid #bababa;
+  background-color: #f8f9fa;
+  flex: 1;
+}
+.value {
+  font-size: larger;
+}
+.metrics {
+  font-size: smaller;
+  color: #707070;
+}
+
+.skeleton {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  display: block;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-metrics {
+  width: 100px;
+  height: 14px;
+  margin-bottom: 8px;
+}
+
+.skeleton-value {
+  width: 80px;
+  height: 18px;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
