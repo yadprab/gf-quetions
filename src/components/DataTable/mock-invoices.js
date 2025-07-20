@@ -1,51 +1,47 @@
-export const mockInvoices = [
-  {
-    id: 'INV-001',
-    customer: { name: 'Acme Inc.' },
-    amount: 1250.75,
-    dueDate: '2025-07-25',
-    status: 'pending',
-  },
-  {
-    id: 'INV-002',
-    customer: { name: 'Stark Industries' },
-    amount: 2500.00,
-    dueDate: '2025-07-20',
-    status: 'paid',
-  },
-  {
-    id: 'INV-003',
-    customer: { name: 'Wayne Enterprises' },
-    amount: 800.50,
-    dueDate: '2025-06-15',
-    status: 'overdue',
-  },
-  {
-    id: 'INV-004',
-    customer: { name: 'Cyberdyne Systems' },
-    amount: 5400.00,
-    dueDate: '2025-08-01',
-    status: 'draft',
-  },
-    {
-    id: 'INV-005',
-    customer: { name: 'Ollivanders Wand Shop' },
-    amount: 75.00,
-    dueDate: '2025-07-28',
-    status: 'pending',
-  },
-  {
-    id: 'INV-006',
-    customer: { name: 'Gekko & Co' },
-    amount: 3200.00,
-    dueDate: '2025-05-10',
-    status: 'overdue',
-  },
-  {
-    id: 'INV-007',
-    customer: { name: 'Buy n Large' },
-    amount: 150.25,
-    dueDate: '2025-07-22',
-    status: 'paid',
-  },
+
+const mockCustomers = [
+  { id: "C001", name: "Innovate Inc." },
+  { id: "C002", name: "Solutions Corp." },
+  { id: "C003", name: "Quantum Dynamics" },
+  { id: "C004", name: "Apex Enterprises" },
+  { id: "C005", name: "Stellar Industries" },
+  { id: "C006", name: "Nexus Group" },
+  { id: "C007", name: "Pinnacle Co." },
+  { id: "C008", name: "Synergy Systems" },
+  { id: "C009", name: "Momentum LLC" },
+  { id: "C010", name: "Horizon Ventures" },
+  { id: "C011", name: "Zenith Corporation" },
+  { id: "C012", name: "Meridian Partners" },
+  { id: "C013", name: "Keystone Solutions" },
+  { id: "C014", name: "Everest Holdings" },
+  { id: "C015", name: "Catalyst Creations" },
 ];
+
+const generateMockInvoice = (index) => {
+  const customer =
+    mockCustomers[Math.floor(Math.random() * mockCustomers.length)];
+  const amount = Math.floor(Math.random() * 5000) + 500;
+  const statusOptions = ["paid", "pending", "overdue", "draft"];
+  const status = statusOptions[Math.floor(Math.random() * statusOptions.length)];
+  const issueDate = new Date();
+  issueDate.setDate(issueDate.getDate() - Math.floor(Math.random() * 90));
+  const dueDate = new Date(issueDate);
+  dueDate.setDate(dueDate.getDate() + 30);
+
+  return {
+    id: `INV-${1000 + index}`,
+    customer: {
+      id: customer.id,
+      name: customer.name,
+      email: `${customer.name.toLowerCase().replace(/\s/g, ".")}@example.com`,
+    },
+    amount: amount,
+    status: status,
+    issueDate: issueDate.toISOString().split("T")[0],
+    dueDate: dueDate.toISOString().split("T")[0],
+  };
+};
+
+export const mockInvoices = Array.from({ length: 120 }, (_, i) =>
+  generateMockInvoice(i + 1)
+);

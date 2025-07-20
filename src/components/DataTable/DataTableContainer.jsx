@@ -5,6 +5,7 @@ import React, {
   useContext,
   useMemo,
 } from "react";
+import { FixedSizeList } from "react-window";
 import { AppContext } from "../../context/AppContext";
 import { mockInvoices } from "./mock-invoices";
 
@@ -200,6 +201,14 @@ export const DataTableContainer = ({
     return result;
   }, [invoices, searchTerm, filters, sortConfig]);
 
+  const paginatedInvoices = useMemo(() => {
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredAndSortedInvoices.slice(startIndex, endIndex);
+  }, [filteredAndSortedInvoices, page, pageSize]);
+
+  const totalPages = Math.ceil(filteredAndSortedInvoices.length / pageSize);
+
   // Handle row selection
   const toggleInvoiceSelection = (invoiceId) => {
     setSelectedInvoices((prev) =>
@@ -240,6 +249,166 @@ export const DataTableContainer = ({
       alert("Failed to perform bulk action. Please try again.");
     }
   };
+
+  const Row = ({ index, style }) => {
+    const invoice = paginatedInvoices[index];
+    
+    return (
+      <div style={style}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            minHeight: "60px",
+            borderBottom: "1px solid #edf2f7",
+            backgroundColor: selectedInvoices.includes(invoice.id)
+              ? "#f0f9ff"
+              : "white",
+            "&:hover": {
+              backgroundColor: "#f8fafc",
+            },
+          }}
+        >
+          <div style={{ width: "40px", padding: "16px", textAlign: "center" }}>
+            <input
+              type="checkbox"
+              checked={selectedInvoices.includes(invoice.id)}
+              onChange={() => toggleInvoiceSelection(invoice.id)}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+          <div style={{ width: "120px", padding: "16px", fontWeight: "500" }}>
+            {invoice.id}
+          </div>
+          <div style={{ width: "180px", padding: "16px" }}>
+            {invoice.customer?.name || "N/A"}
+          </div>
+          <div
+            style={{
+              width: "120px",
+              padding: "16px",
+              textAlign: "right",
+              fontWeight: "500",
+            }}
+          >
+            {formatCurrency(invoice.amount)}
+          </div>
+          <div style={{ width: "140px", padding: "16px" }}>
+            <div>
+              {new Date(invoice.dueDate).toLocaleDateString()}
+            </div>
+            {invoice.daysOverdue > 0 && (
+              <div style={{ fontSize: "12px", color: "#e53e3e" }}>
+                {invoice.daysOverdue} days overdue
+              </div>
+            )}
+          </div>
+          <div style={{ width: "120px", padding: "16px" }}>
+            <select
+              value={invoice.status}
+              onChange={(e) =>
+                handleStatusUpdate(invoice.id, e.target.value)
+              }
+              style={{
+                padding: "4px 8px",
+                borderRadius: "4px",
+                border: "1px solid #e2e8f0",
+                backgroundColor: getInvoiceStatusStyle(invoice.status)
+                  .backgroundColor,
+                color: getInvoiceStatusStyle(invoice.status).color,
+                cursor: "pointer",
+                minWidth: "100px",
+                "&:hover": {
+                  opacity: 0.9,
+                },
+              }}
+            >
+              <option value="draft">Draft</option>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="overdue">Overdue</option>
+            </select>
+          </div>
+          <div style={{ flex: 1, padding: "16px" }}>
+            <div style={{ display: "flex", gap: "8px", alignItems:"center" }}>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Handle view action
+                  console.log("View invoice:", invoice.id);
+                }}
+                style={{
+                  padding: "4px 8px",
+                  backgroundColor: "#ebf8ff",
+                  color: "#3182ce",
+                  border: "1px solid #bee3f8",
+                  borderRadius: "4px",
+                  height:"fit-content",
+                  cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: "#bee3f8",
+                  },
+                }}
+              >
+                View
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Handle edit action
+                  console.log("Edit invoice:", invoice.id);
+                }}
+                style={{
+                  padding: "4px 8px",
+                  backgroundColor: "#fefcbf",
+                  color: "#975a16",
+                  border: "1px solid #faf089",
+                  borderRadius: "4px",
+                  height:"fit-content",
+                  cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: "#faf089",
+                  },
+                }}
+              >
+                Edit
+              </button>
+              {collaborators[invoice.id] && (
+              <div
+                style={{
+                  fontSize: "12px",
+                  color: "#718096",
+                  marginTop: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                }}
+              >
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: "10px",
+                    height: "8px",
+                    borderRadius: "50%",
+                    backgroundColor: "#48bb78",
+                  }}
+                ></span>
+                {collaborators[invoice.id].name} is{" "}
+                {collaborators[invoice.id].action} this invoice
+              </div>
+            )}
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, filters]);
 
   // Fetch data on mount and when dependencies change
   useEffect(() => {
@@ -379,234 +548,96 @@ export const DataTableContainer = ({
           overflow: "hidden",
         }}
       >
-        <div style={{ overflowX: "auto" }}>
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              minWidth: "1000px",
-            }}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            minHeight: "48px",
+            backgroundColor: "#f8fafc",
+            borderBottom: "1px solid #e2e8f0",
+            textAlign: "left",
+          }}
+        >
+          <div style={{ width: "40px", padding: "12px 16px" }}>
+            <input
+              type="checkbox"
+              checked={
+                selectedInvoices.length > 0 &&
+                selectedInvoices.length === paginatedInvoices.length
+              }
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setSelectedInvoices(
+                    paginatedInvoices.map((inv) => inv.id)
+                  );
+                } else {
+                  setSelectedInvoices([]);
+                }
+              }}
+            />
+          </div>
+          <div
+            style={{ width: "120px", padding: "12px 16px", cursor: "pointer" }}
+            onClick={() => handleSort("id")}
           >
-            <thead>
-              <tr
-                style={{
-                  backgroundColor: "#f8fafc",
-                  borderBottom: "1px solid #e2e8f0",
-                  textAlign: "left",
-                }}
-              >
-                <th style={{ padding: "12px 16px", width: "40px" }}>
-                  <input
-                    type="checkbox"
-                    checked={
-                      selectedInvoices.length > 0 &&
-                      selectedInvoices.length ===
-                        filteredAndSortedInvoices.length
-                    }
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectedInvoices(
-                          filteredAndSortedInvoices.map((inv) => inv.id)
-                        );
-                      } else {
-                        setSelectedInvoices([]);
-                      }
-                    }}
-                  />
-                </th>
-                <th
-                  style={{ padding: "12px 16px", cursor: "pointer" }}
-                  onClick={() => handleSort("id")}
-                >
-                  Invoice #
-                </th>
-                <th
-                  style={{ padding: "12px 16px", cursor: "pointer" }}
-                  onClick={() => handleSort("customer.name")}
-                >
-                  Customer
-                </th>
-                <th
-                  style={{
-                    padding: "12px 16px",
-                    textAlign: "right",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => handleSort("amount")}
-                >
-                  Amount
-                </th>
-                <th
-                  style={{ padding: "12px 16px", cursor: "pointer" }}
-                  onClick={() => handleSort("dueDate")}
-                >
-                  Due Date
-                </th>
-                <th
-                  style={{ padding: "12px 16px", cursor: "pointer" }}
-                  onClick={() => handleSort("status")}
-                >
-                  Status
-                </th>
-                <th style={{ padding: "12px 16px" }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredAndSortedInvoices.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan="7"
-                    style={{ textAlign: "center", padding: "32px" }}
-                  >
-                    No invoices found matching your criteria
-                  </td>
-                </tr>
-              ) : (
-                filteredAndSortedInvoices.map((invoice) => (
-                  <tr
-                    key={invoice.id}
-                    style={{
-                      borderBottom: "1px solid #edf2f7",
-                      backgroundColor: selectedInvoices.includes(invoice.id)
-                        ? "#f0f9ff"
-                        : "white",
-                      "&:hover": {
-                        backgroundColor: "#f8fafc",
-                      },
-                    }}
-                  >
-                    <td style={{ padding: "16px", textAlign: "center" }}>
-                      <input
-                        type="checkbox"
-                        checked={selectedInvoices.includes(invoice.id)}
-                        onChange={() => toggleInvoiceSelection(invoice.id)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    </td>
-                    <td style={{ padding: "16px", fontWeight: "500" }}>
-                      {invoice.id}
-                    </td>
-                    <td style={{ padding: "16px" }}>
-                      {invoice.customer?.name || "N/A"}
-                    </td>
-                    <td
-                      style={{
-                        padding: "16px",
-                        textAlign: "right",
-                        fontWeight: "500",
-                      }}
-                    >
-                      {formatCurrency(invoice.amount)}
-                    </td>
-                    <td style={{ padding: "16px" }}>
-                      <div>
-                        {new Date(invoice.dueDate).toLocaleDateString()}
-                      </div>
-                      {invoice.daysOverdue > 0 && (
-                        <div style={{ fontSize: "12px", color: "#e53e3e" }}>
-                          {invoice.daysOverdue} days overdue
-                        </div>
-                      )}
-                    </td>
-                    <td style={{ padding: "16px" }}>
-                      <select
-                        value={invoice.status}
-                        onChange={(e) =>
-                          handleStatusUpdate(invoice.id, e.target.value)
-                        }
-                        style={{
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          border: "1px solid #e2e8f0",
-                          backgroundColor: getInvoiceStatusStyle(invoice.status)
-                            .backgroundColor,
-                          color: getInvoiceStatusStyle(invoice.status).color,
-                          cursor: "pointer",
-                          minWidth: "100px",
-                          "&:hover": {
-                            opacity: 0.9,
-                          },
-                        }}
-                      >
-                        <option value="draft">Draft</option>
-                        <option value="pending">Pending</option>
-                        <option value="paid">Paid</option>
-                        <option value="overdue">Overdue</option>
-                      </select>
-                    </td>
-                    <td style={{ padding: "16px" }}>
-                      <div style={{ display: "flex", gap: "8px" }}>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Handle view action
-                            console.log("View invoice:", invoice.id);
-                          }}
-                          style={{
-                            padding: "4px 8px",
-                            backgroundColor: "#ebf8ff",
-                            color: "#3182ce",
-                            border: "1px solid #bee3f8",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                            "&:hover": {
-                              backgroundColor: "#bee3f8",
-                            },
-                          }}
-                        >
-                          View
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Handle edit action
-                            console.log("Edit invoice:", invoice.id);
-                          }}
-                          style={{
-                            padding: "4px 8px",
-                            backgroundColor: "#fefcbf",
-                            color: "#975a16",
-                            border: "1px solid #faf089",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                            "&:hover": {
-                              backgroundColor: "#faf089",
-                            },
-                          }}
-                        >
-                          Edit
-                        </button>
-                      </div>
-                      {collaborators[invoice.id] && (
-                        <div
-                          style={{
-                            fontSize: "12px",
-                            color: "#718096",
-                            marginTop: "4px",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "4px",
-                          }}
-                        >
-                          <span
-                            style={{
-                              display: "inline-block",
-                              width: "8px",
-                              height: "8px",
-                              borderRadius: "50%",
-                              backgroundColor: "#48bb78",
-                            }}
-                          ></span>
-                          {collaborators[invoice.id].name} is{" "}
-                          {collaborators[invoice.id].action} this invoice
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+            Invoice #
+          </div>
+          <div
+            style={{ width: "180px", padding: "12px 16px", cursor: "pointer" }}
+            onClick={() => handleSort("customer.name")}
+          >
+            Customer
+          </div>
+          <div
+            style={{
+              width: "120px",
+              padding: "12px 16px",
+              textAlign: "right",
+              cursor: "pointer",
+            }}
+            onClick={() => handleSort("amount")}
+          >
+            Amount
+          </div>
+          <div
+            style={{ width: "140px", padding: "12px 16px", cursor: "pointer" }}
+            onClick={() => handleSort("dueDate")}
+          >
+            Due Date
+          </div>
+          <div
+            style={{ width: "120px", padding: "12px 16px", cursor: "pointer" }}
+            onClick={() => handleSort("status")}
+          >
+            Status
+          </div>
+          <div style={{ flex: 1, padding: "12px 16px" }}>Actions</div>
+        </div>
+
+        <div style={{ height: "400px", width: "100%" }}>
+          {paginatedInvoices.length === 0 ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+                textAlign: "center",
+                padding: "32px",
+              }}
+            >
+              No invoices found matching your criteria
+            </div>
+          ) : (
+            <FixedSizeList
+              height={400}
+              itemCount={paginatedInvoices.length}
+              itemSize={60}
+              width="100%"
+            >
+              {Row}
+            </FixedSizeList>
+          )}
         </div>
 
         {/* Table Footer */}
@@ -623,7 +654,7 @@ export const DataTableContainer = ({
           <div style={{ fontSize: "14px", color: "#4a5568" }}>
             {selectedInvoices.length > 0
               ? `${selectedInvoices.length} selected`
-              : `Showing ${filteredAndSortedInvoices.length} invoices`}
+              : `Showing ${paginatedInvoices.length} of ${filteredAndSortedInvoices.length} invoices`}
             {lastUpdated && (
               <span
                 style={{
@@ -684,34 +715,28 @@ export const DataTableContainer = ({
 
               <div
                 style={{
-                  minWidth: "24px",
+                  minWidth: "60px",
                   textAlign: "center",
                   fontSize: "14px",
                   color: "#4a5568",
                 }}
               >
-                {page}
+                {page} of {totalPages || 1}
               </div>
 
               <button
-                onClick={() => setPage((p) => p + 1)}
-                disabled={filteredAndSortedInvoices.length < pageSize}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
                 style={{
                   padding: "6px 12px",
                   backgroundColor:
-                    filteredAndSortedInvoices.length < pageSize
-                      ? "#edf2f7"
-                      : "white",
+                    page >= totalPages ? "#edf2f7" : "white",
                   color:
-                    filteredAndSortedInvoices.length < pageSize
-                      ? "#a0aec0"
-                      : "#4a5568",
+                    page >= totalPages ? "#a0aec0" : "#4a5568",
                   border: "1px solid #e2e8f0",
                   borderRadius: "4px",
                   cursor:
-                    filteredAndSortedInvoices.length < pageSize
-                      ? "not-allowed"
-                      : "pointer",
+                    page >= totalPages ? "not-allowed" : "pointer",
                   fontSize: "14px",
                 }}
               >
