@@ -17,7 +17,7 @@ const mockCustomers = [
   { id: "C015", name: "Catalyst Creations" },
 ];
 
-const generateMockInvoice = (index) => {
+const generateMockInvoice = (index: number) => {
   const customer =
     mockCustomers[Math.floor(Math.random() * mockCustomers.length)];
   const amount = Math.floor(Math.random() * 5000) + 500;

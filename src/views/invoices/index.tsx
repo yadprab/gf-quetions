@@ -40,7 +40,7 @@ export function InvoicePage() {
             ))}
       </section>
       <section>
-        <DataTableContainer />
+        <DataTableContainer endpoint="mock" columns={[]} />
       </section>
     </div>
   );

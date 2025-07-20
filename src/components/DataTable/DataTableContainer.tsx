@@ -1,42 +1,80 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useContext,
-  useMemo,
-} from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import type { FC, CSSProperties } from "react";
+
 import { FixedSizeList } from "react-window";
-import { AppContext } from "../../context/AppContext";
+import type { ListChildComponentProps } from "react-window";
 import { mockInvoices } from "./mock-invoices";
 
-export const DataTableContainer = ({
+interface Customer {
+  name: string;
+}
+
+interface Invoice {
+  id: string;
+  customer: Customer;
+  amount: number;
+  dueDate: string;
+  status: "paid" | "pending" | "overdue" | "draft";
+  lastUpdated: Date;
+  daysOverdue: number;
+}
+
+interface SortConfig {
+  key: keyof Invoice | "customer.name";
+  direction: "asc" | "desc";
+}
+
+interface Filters {
+  status: "paid" | "pending" | "overdue" | "draft" | "";
+  amountRange: {
+    min: number;
+    max: number;
+  };
+  daysOverdue: number;
+}
+
+interface Collaborator {
+  name: string;
+  action: string;
+}
+
+interface Collaborators {
+  [invoiceId: string]: Collaborator;
+}
+
+interface DataTableContainerProps {
+  endpoint: string;
+  columns: unknown[];
+  initialPageSize?: number;
+}
+
+export const DataTableContainer: FC<DataTableContainerProps> = ({
   endpoint,
   columns,
   initialPageSize = 10,
 }) => {
   // Context and state
-  const { user } = useContext(AppContext);
-  const [invoices, setInvoices] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(initialPageSize);
-  const [sortConfig, setSortConfig] = useState({
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(initialPageSize);
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: "dueDate",
     direction: "asc",
   });
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState({
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filters, setFilters] = useState<Filters>({
     status: "",
     amountRange: { min: 0, max: 100000 },
     daysOverdue: 0,
   });
-  const [selectedInvoices, setSelectedInvoices] = useState([]);
-  const [collaborators, setCollaborators] = useState({});
-  const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [selectedInvoices, setSelectedInvoices] = useState<string[]>([]);
+  const [collaborators, setCollaborators] = useState<Collaborators>({});
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
   // Format currency
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
@@ -44,16 +82,16 @@ export const DataTableContainer = ({
   };
 
   // Calculate days overdue
-  const getDaysOverdue = (dueDate) => {
+  const getDaysOverdue = (dueDate: string): number => {
     const today = new Date();
     const due = new Date(dueDate);
-    const diffTime = today - due;
+    const diffTime = today.getTime() - due.getTime();
     return Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
   };
 
   // Get status style
-  const getInvoiceStatusStyle = (status) => {
-    const styles = {
+  const getInvoiceStatusStyle = (status: Invoice["status"]): CSSProperties => {
+    const styles: { [key in Invoice["status"]]: CSSProperties } = {
       paid: { backgroundColor: "#e6fffa", color: "#234e52" },
       pending: { backgroundColor: "#feebc8", color: "#7b341e" },
       overdue: { backgroundColor: "#fed7d7", color: "#822727" },
@@ -61,21 +99,6 @@ export const DataTableContainer = ({
     };
     return styles[status] || { backgroundColor: "#f7fafc", color: "#4a5568" };
   };
-
-  // Get row style
-  const getRowStyle = (invoice) => ({
-    ...(selectedInvoices.includes(invoice.id) && {
-      backgroundColor: "#f0f7ff",
-    }),
-    ...(invoice.daysOverdue > 30 && { borderLeft: "4px solid #c62828" }),
-    ...(invoice.daysOverdue > 60 && { borderLeft: "4px solid #8e0000" }),
-    cursor: "pointer",
-    transition: "all 0.2s",
-    position: "relative",
-    "&:hover": {
-      backgroundColor: "#f5f5f5",
-    },
-  });
 
   // Fetch invoices
   const fetchInvoices = useCallback(async () => {
@@ -88,13 +111,15 @@ export const DataTableContainer = ({
       const now = new Date();
 
       // Process invoices
-      const processedInvoices = result.data.map((invoice) => ({
-        ...invoice,
-        lastUpdated: new Date(
-          now - Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 2)
-        ),
-        daysOverdue: getDaysOverdue(invoice.dueDate),
-      }));
+      const processedInvoices: Invoice[] = result.data.map(
+        (invoice: Invoice) => ({
+          ...invoice,
+          lastUpdated: new Date(
+            now.getTime() - Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 2)
+          ),
+          daysOverdue: getDaysOverdue(invoice.dueDate),
+        })
+      );
 
       setInvoices(processedInvoices);
       setLastUpdated(new Date());
@@ -109,7 +134,7 @@ export const DataTableContainer = ({
 
   const fetchCollaborators = useCallback(async () => {
     if (invoices.length === 0) return;
-    const simulatedCollaborators = {};
+    const simulatedCollaborators: Collaborators = {};
     const actions = ["editing", "reviewing", "commenting on"];
     const names = ["Alex Johnson", "Sam Wilson", "Taylor Smith", "Jordan Lee"];
 
@@ -126,8 +151,8 @@ export const DataTableContainer = ({
   }, [invoices]);
 
   // Handle sorting
-  const handleSort = (key) => {
-    let direction = "asc";
+  const handleSort = (key: SortConfig["key"]) => {
+    let direction: "asc" | "desc" = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
     }
@@ -135,7 +160,10 @@ export const DataTableContainer = ({
   };
 
   // Handle status update
-  const handleStatusUpdate = async (invoiceId, newStatus) => {
+  const handleStatusUpdate = async (
+    invoiceId: string,
+    newStatus: Invoice["status"]
+  ) => {
     try {
       // Optimistic update
       setInvoices((prevInvoices) =>
@@ -158,7 +186,7 @@ export const DataTableContainer = ({
 
   // Filter and sort invoices
   const filteredAndSortedInvoices = useMemo(() => {
-    let result = [...invoices];
+    let result: Invoice[] = [...invoices];
 
     // Apply search
     if (searchTerm) {
@@ -209,7 +237,7 @@ export const DataTableContainer = ({
   const totalPages = Math.ceil(filteredAndSortedInvoices.length / pageSize);
 
   // Handle row selection
-  const toggleInvoiceSelection = (invoiceId) => {
+  const toggleInvoiceSelection = (invoiceId: string) => {
     setSelectedInvoices((prev) =>
       prev.includes(invoiceId)
         ? prev.filter((id) => id !== invoiceId)
@@ -218,7 +246,7 @@ export const DataTableContainer = ({
   };
 
   // Handle bulk actions
-  const handleBulkAction = async (action) => {
+  const handleBulkAction = async (action: string) => {
     if (selectedInvoices.length === 0) return;
 
     try {
@@ -249,9 +277,9 @@ export const DataTableContainer = ({
     }
   };
 
-  const Row = ({ index, style }) => {
+  const Row: FC<ListChildComponentProps> = ({ index, style }) => {
     const invoice = paginatedInvoices[index];
-    
+
     return (
       <div style={style}>
         <div
@@ -263,9 +291,6 @@ export const DataTableContainer = ({
             backgroundColor: selectedInvoices.includes(invoice.id)
               ? "#f0f9ff"
               : "white",
-            "&:hover": {
-              backgroundColor: "#f8fafc",
-            },
           }}
         >
           <div style={{ width: "40px", padding: "16px", textAlign: "center" }}>
@@ -293,9 +318,7 @@ export const DataTableContainer = ({
             {formatCurrency(invoice.amount)}
           </div>
           <div style={{ width: "140px", padding: "16px" }}>
-            <div>
-              {new Date(invoice.dueDate).toLocaleDateString()}
-            </div>
+            <div>{new Date(invoice.dueDate).toLocaleDateString()}</div>
             {invoice.daysOverdue > 0 && (
               <div style={{ fontSize: "12px", color: "#e53e3e" }}>
                 {invoice.daysOverdue} days overdue
@@ -306,7 +329,10 @@ export const DataTableContainer = ({
             <select
               value={invoice.status}
               onChange={(e) =>
-                handleStatusUpdate(invoice.id, e.target.value)
+                handleStatusUpdate(
+                  invoice.id,
+                  e.target.value as Invoice["status"]
+                )
               }
               style={{
                 padding: "4px 8px",
@@ -317,9 +343,6 @@ export const DataTableContainer = ({
                 color: getInvoiceStatusStyle(invoice.status).color,
                 cursor: "pointer",
                 minWidth: "100px",
-                "&:hover": {
-                  opacity: 0.9,
-                },
               }}
             >
               <option value="draft">Draft</option>
@@ -329,7 +352,7 @@ export const DataTableContainer = ({
             </select>
           </div>
           <div style={{ flex: 1, padding: "16px" }}>
-            <div style={{ display: "flex", gap: "8px", alignItems:"center" }}>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -342,11 +365,8 @@ export const DataTableContainer = ({
                   color: "#3182ce",
                   border: "1px solid #bee3f8",
                   borderRadius: "4px",
-                  height:"fit-content",
+                  height: "fit-content",
                   cursor: "pointer",
-                  "&:hover": {
-                    backgroundColor: "#bee3f8",
-                  },
                 }}
               >
                 View
@@ -363,41 +383,37 @@ export const DataTableContainer = ({
                   color: "#975a16",
                   border: "1px solid #faf089",
                   borderRadius: "4px",
-                  height:"fit-content",
+                  height: "fit-content",
                   cursor: "pointer",
-                  "&:hover": {
-                    backgroundColor: "#faf089",
-                  },
                 }}
               >
                 Edit
               </button>
               {collaborators[invoice.id] && (
-              <div
-                style={{
-                  fontSize: "12px",
-                  color: "#718096",
-                  marginTop: "4px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
-                }}
-              >
-                <span
+                <div
                   style={{
-                    display: "inline-block",
-                    width: "10px",
-                    height: "8px",
-                    borderRadius: "50%",
-                    backgroundColor: "#48bb78",
+                    fontSize: "12px",
+                    color: "#718096",
+                    marginTop: "4px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
                   }}
-                ></span>
-                {collaborators[invoice.id].name} is{" "}
-                {collaborators[invoice.id].action} this invoice
-              </div>
-            )}
+                >
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "10px",
+                      height: "8px",
+                      borderRadius: "50%",
+                      backgroundColor: "#48bb78",
+                    }}
+                  ></span>
+                  {collaborators[invoice.id].name} is{" "}
+                  {collaborators[invoice.id].action} this invoice
+                </div>
+              )}
             </div>
-            
           </div>
         </div>
       </div>
@@ -416,10 +432,10 @@ export const DataTableContainer = ({
 
   // Mocking Realtime Collaborator information (By Polling)
   useEffect(() => {
-    fetchCollaborators(); 
-    const intervalId = setInterval(fetchCollaborators, 5000); 
+    fetchCollaborators();
+    const intervalId = setInterval(fetchCollaborators, 5000);
 
-    return () => clearInterval(intervalId); 
+    return () => clearInterval(intervalId);
   }, [fetchCollaborators]);
 
   // Render loading state
@@ -506,7 +522,7 @@ export const DataTableContainer = ({
             onChange={(e) =>
               setFilters((prev) => ({
                 ...prev,
-                status: e.target.value || undefined,
+                status: e.target.value as Filters["status"],
               }))
             }
             style={{
@@ -574,9 +590,7 @@ export const DataTableContainer = ({
               }
               onChange={(e) => {
                 if (e.target.checked) {
-                  setSelectedInvoices(
-                    paginatedInvoices.map((inv) => inv.id)
-                  );
+                  setSelectedInvoices(paginatedInvoices.map((inv) => inv.id));
                 } else {
                   setSelectedInvoices([]);
                 }
@@ -736,14 +750,11 @@ export const DataTableContainer = ({
                 disabled={page >= totalPages}
                 style={{
                   padding: "6px 12px",
-                  backgroundColor:
-                    page >= totalPages ? "#edf2f7" : "white",
-                  color:
-                    page >= totalPages ? "#a0aec0" : "#4a5568",
+                  backgroundColor: page >= totalPages ? "#edf2f7" : "white",
+                  color: page >= totalPages ? "#a0aec0" : "#4a5568",
                   border: "1px solid #e2e8f0",
                   borderRadius: "4px",
-                  cursor:
-                    page >= totalPages ? "not-allowed" : "pointer",
+                  cursor: page >= totalPages ? "not-allowed" : "pointer",
                   fontSize: "14px",
                 }}
               >
