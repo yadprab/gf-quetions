@@ -1,11 +1,12 @@
 // Main application file - last updated by dev3
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { CustomerPage } from './components/legacy/customer/CustomerPage';
-import Details from './views/customer/Details';
+import CustomerDetailsPage from './views/CustomerDetails/CustomerDetailsPage';
 import DashboardPage from './views/dashboard/DashboardPage';
 import SettingsPage from './views/settings/SettingsPage';
 import { AppProvider } from './context/AppContext';
 import './App.css';
+import InvoicePage from './views/InvoicePage/InvoicePage';
 
 // Navigation component with inconsistent styling and mixed concerns
 const Navigation = () => {
@@ -38,6 +39,7 @@ const Navigation = () => {
       <Link to="/" style={isActive('/')}>Home</Link>
       <Link to="/dashboard" style={isActive('/dashboard')}>Dashboard</Link>
       <Link to="/customers" style={isActive('/customers')}>Customers</Link>
+      <Link to="/invoices" style={isActive('/invoices')}>Invoice</Link>
       <Link to="/customer-details" style={isActive('/customer-details')}>Customer Details</Link>
       <Link to="/settings" style={isActive('/settings')}>Settings</Link>
     </nav>
@@ -54,7 +56,8 @@ function App() {
             <Route path="/" element={<h1>Customer Portal</h1>} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/customers" element={<CustomerPage />} />
-            <Route path="/customer-details" element={<Details />} />
+            <Route path="/invoices" element={<InvoicePage invoiceId="12345" />} />
+            <Route path="/customer-details" element={<CustomerDetailsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/settings/:tab" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
