@@ -1,0 +1,13 @@
+.card {
+  border-radius: 8px;
+  border: 1px solid #bababa;
+  background-color: #f8f9fa;
+  flex: 1;
+}
+.value {
+  font-size: larger;
+}
+.metrics {
+  font-size: smaller;
+  color: #707070;
+}
