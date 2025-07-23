@@ -3,8 +3,6 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 type AppContextType = {
   user: any;
-  theme: string;
-  setTheme: (theme: string) => void;
   isLoading: boolean;
   error: string | null;
   notifications: any[];
@@ -20,7 +18,6 @@ export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any>(null);
-  const [theme, setTheme] = useState('light');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -78,8 +75,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   const value = {
     user,
-    theme,
-    setTheme,
     isLoading,
     error,
     notifications,

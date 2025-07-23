@@ -1,8 +1,26 @@
+/* Clean White Theme */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #ffffff;
+  color: #333333;
+}
+
 #root {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  background-color: #ffffff;
+  min-height: 100vh;
 }
 
 .logo {
@@ -39,4 +57,42 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Homepage Styles */
+.home-page {
+      background: (90deg, rgba(242, 0, 0, 1) 0%, rgba(208, 208, 247, 1) 0%, rgba(213, 229, 235, 1) 4%);;
+      padding: 20px;
+}
+
+
+/* Fixed Navigation Styles */
+nav {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Responsive adjustments for homepage */
+@media (max-width: 768px) {
+  .home-page h1 {
+    font-size: 2.5rem;
+  }
+  
+  .home-page .text-xl {
+    font-size: 1.125rem;
+  }
+  
+  .home-page .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Adjust navigation padding on mobile */
+  nav {
+    padding: 10px 15px !important;
+  }
+  
+  /* Adjust main content padding on mobile */
+  .App {
+    padding: 70px 15px 15px 15px !important;
+  }
 }
