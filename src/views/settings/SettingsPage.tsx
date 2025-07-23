@@ -1,22 +1,25 @@
-// Bad: Complex state management, side effects, and type issues
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeToggle } from '../../components/ThemeToggle';
 
-// Complex type that's not properly utilized
 type UserSettings = {
   notifications: {
     email: boolean;
     push: boolean;
-    // Missing type for sms
+    sms: boolean;
   };
   theme: 'light' | 'dark' | 'system';
-  // No type safety for preferences
+  appearance: {
+    theme: 'light' | 'dark' | 'system';
+  };
   preferences: Record<string, any>;
 };
 
 const SettingsPage = () => {
   const { tab = 'profile' } = useParams();
   const navigate = useNavigate();
+  const { theme, setTheme, isDark } = useTheme();
   
   // Complex state that should be normalized
   const [settings, setSettings] = useState<Partial<UserSettings>>({});
@@ -25,23 +28,24 @@ const SettingsPage = () => {
   
   // Side effect with missing dependencies
   useEffect(() => {
-    // Simulate API call
+    // Mock API call with proper error handling
     const fetchSettings = async () => {
       try {
-        const response = await fetch('/api/settings');
-        const data = await response.json();
-        
-        // Mutating state directly - bad practice
-        setSettings(prev => ({
-          ...prev,
-          ...data,
-          // Overriding with defaults - potential bug if data is undefined
+        // Mock data instead of real API call
+        const mockData = {
           notifications: {
             email: true,
             push: false,
-            ...data?.notifications
-          }
-        }));
+            sms: false,
+          },
+          theme: 'light' as const,
+          preferences: {}
+        };
+        
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        setSettings(mockData);
       } catch (err) {
         console.error('Failed to load settings', err);
       }
@@ -56,11 +60,11 @@ const SettingsPage = () => {
   }, []);
   
   // Inefficient handler that recreates function on every render
-  const handleInputChange = (section: string, key: string, value: any) => {
+  const handleInputChange = (section: keyof UserSettings, key: string, value: any) => {
     setSettings(prev => ({
       ...prev,
       [section]: {
-        ...prev[section as keyof UserSettings],
+        ...(prev[section] as Record<string, any>),
         [key]: value
       }
     }));
@@ -72,25 +76,15 @@ const SettingsPage = () => {
     setSaveError(null);
     
     try {
-      // No validation before save
-      const response = await fetch('/api/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(settings)
-      });
+      // Mock save operation instead of real API call
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      if (!response.ok) {
-        throw new Error('Failed to save settings');
-      }
-      
-      // Inefficient state update
-      setSettings(await response.json());
-      
-      // Side effect in event handler
+      // Simulate successful save
       showToast('Settings saved successfully');
       
     } catch (err) {
-      setSaveError(err.message);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setSaveError(errorMessage);
       
       // Side effect in catch block
       logError('SettingsSaveError', err);
@@ -99,110 +93,203 @@ const SettingsPage = () => {
     }
   };
   
-  // Inline styles that recreate objects on every render
-  const tabStyle = (isActive: boolean) => ({
-    padding: '10px 20px',
-    border: 'none',
-    background: isActive ? '#007bff' : 'transparent',
-    color: isActive ? 'white' : '#333',
-    cursor: 'pointer',
-    borderRadius: '4px 4px 0 0',
-    marginRight: '5px'
-  });
+
   
   // Complex render logic that should be a separate component
   const renderTabContent = () => {
     switch (tab) {
       case 'notifications':
         return (
-          <div>
-            <h3>Notification Settings</h3>
-            <div>
-              <label>
+          <div className="space-y-6">
+            <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Notification Settings
+            </h3>
+            
+            <div className="space-y-4">
+              <div className={`flex items-center justify-between p-4 border rounded-lg ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
+                <div>
+                  <label className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    Email Notifications
+                  </label>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                    Receive notifications via email
+                  </p>
+                </div>
                 <input
                   type="checkbox"
                   checked={settings.notifications?.email ?? false}
                   onChange={(e) => handleInputChange('notifications', 'email', e.target.checked)}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                 />
-                Email Notifications
-              </label>
-              {/* Missing error handling for undefined settings */}
-            </div>
-            <div>
-              <label>
+              </div>
+              
+              <div className={`flex items-center justify-between p-4 border rounded-lg ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
+                <div>
+                  <label className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    Push Notifications
+                  </label>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                    Receive push notifications in browser
+                  </p>
+                </div>
                 <input
                   type="checkbox"
                   checked={settings.notifications?.push ?? false}
                   onChange={(e) => handleInputChange('notifications', 'push', e.target.checked)}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                 />
-                Push Notifications
-              </label>
+              </div>
+              
+              <div className={`flex items-center justify-between p-4 border rounded-lg ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
+                <div>
+                  <label className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    SMS Notifications
+                  </label>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                    Receive notifications via SMS
+                  </p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={settings.notifications?.sms ?? false}
+                  onChange={(e) => handleInputChange('notifications', 'sms', e.target.checked)}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+              </div>
             </div>
           </div>
         );
       case 'appearance':
         return (
-          <div>
-            <h3>Appearance</h3>
-            <select
-              value={settings.theme}
-              onChange={(e) => handleInputChange('appearance', 'theme', e.target.value)}
-            >
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-              <option value="system">System Default</option>
-            </select>
+          <div className="space-y-6">
+            <div>
+              <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                Theme Settings
+              </h3>
+              
+              <div className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                <div>
+                  <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    Current Theme
+                  </h4>
+                  <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {theme === 'system' ? 'System Default' : theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+                  </p>
+                </div>
+                <ThemeToggle size="lg" />
+              </div>
+            </div>
+
+            <div>
+              <h4 className={`font-medium mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                Theme Preference
+              </h4>
+              <select
+                value={theme}
+                onChange={(e) => setTheme(e.target.value as 'light' | 'dark' | 'system')}
+                className={`
+                  w-full px-3 py-2 border rounded-md
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                  ${isDark 
+                    ? 'bg-gray-700 border-gray-600 text-white' 
+                    : 'bg-white border-gray-300 text-gray-900'
+                  }
+                `}
+              >
+                <option value="light">Light Mode</option>
+                <option value="dark">Dark Mode</option>
+                <option value="system">System Default</option>
+              </select>
+              <p className={`text-sm mt-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                Choose your preferred theme. System Default will follow your operating system's theme setting.
+              </p>
+            </div>
+
+            <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+              <h4 className={`font-medium mb-2 ${isDark ? 'text-blue-200' : 'text-blue-800'}`}>
+                Preview
+              </h4>
+              <p className={`text-sm ${isDark ? 'text-blue-300' : 'text-blue-700'}`}>
+                You're currently viewing the {isDark ? 'dark' : 'light'} theme. 
+                Changes are applied immediately.
+              </p>
+            </div>
           </div>
         );
       default:
-        return <div>Profile settings coming soon</div>;
+        return (
+          <div className="space-y-6">
+            <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Profile Settings
+            </h3>
+            
+            <div className={`p-6 border rounded-lg ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
+              <p className={`text-center ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                Profile settings are coming soon. You'll be able to update your personal information, 
+                profile picture, and account preferences here.
+              </p>
+            </div>
+          </div>
+        );
     }
   };
   
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <h1>Settings</h1>
-      
-      <div style={{ display: 'flex', marginBottom: '20px' }}>
-        {['profile', 'notifications', 'appearance'].map((tabName) => (
-          <button
-            key={tabName}
-            style={tabStyle(tab === tabName)}
-            onClick={() => navigate(`/settings/${tabName}`)}
-          >
-            {tabName.charAt(0).toUpperCase() + tabName.slice(1)}
-          </button>
-        ))}
-      </div>
-      
-      <div style={{ 
-        border: '1px solid #ddd', 
-        padding: '20px', 
-        borderRadius: '0 4px 4px 4px'
-      }}>
-        {renderTabContent()}
+    <div className={`max-w-4xl mx-auto p-6 min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+      <div className={`rounded-lg shadow-lg ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
+        <div className={`px-6 py-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+          <h1 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            Settings
+          </h1>
+        </div>
         
-        <div style={{ marginTop: '20px' }}>
-          <button 
-            onClick={handleSave}
-            disabled={isSaving}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: isSaving ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {isSaving ? 'Saving...' : 'Save Changes'}
-          </button>
+        {/* Tabs */}
+        <div className={`flex border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+          {['profile', 'notifications'].map((tabName) => (
+            <button
+              key={tabName}
+              onClick={() => navigate(`/settings/${tabName}`)}
+              className={`
+                px-6 py-3 font-medium transition-colors duration-200
+                ${tab === tabName
+                  ? `${isDark ? 'bg-gray-700 text-white border-b-2 border-blue-500' : 'bg-blue-50 text-blue-700 border-b-2 border-blue-500'}`
+                  : `${isDark ? 'text-gray-300 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`
+                }
+              `}
+            >
+              {tabName.charAt(0).toUpperCase() + tabName.slice(1)}
+            </button>
+          ))}
+        </div>
+        
+        {/* Content */}
+        <div className="p-6">
+          {renderTabContent()}
           
-          {saveError && (
-            <div style={{ color: 'red', marginTop: '10px' }}>
-              Error: {saveError}
-            </div>
-          )}
+          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <button 
+              onClick={handleSave}
+              disabled={isSaving}
+              className={`
+                px-6 py-2 rounded-md font-medium transition-colors duration-200
+                ${isSaving
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+                }
+                ${isDark ? 'text-white focus:ring-offset-gray-800' : 'text-white'}
+              `}
+            >
+              {isSaving ? 'Saving...' : 'Save Changes'}
+            </button>
+            
+            {saveError && (
+              <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+                <p className="text-red-700 dark:text-red-400">
+                  Error: {saveError}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

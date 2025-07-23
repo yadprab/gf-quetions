@@ -1,11 +1,12 @@
+/** @format */
+
 // TODO: Refactor this later
-import React, { useState } from 'react';
-import { getCustomerData } from '../../utils/helpers/oldUtils';
-import '../../../styles/customerStyles/card.css';
+import React, { useState } from "react";
+import { getCustomerData } from "../../../utils/helpers/oldUtils";
 
 export const CustomerCard = () => {
   const [data] = useState(getCustomerData());
-  
+
   return (
     <div className="card">
       <div>Customer ID: {data.id}</div>

@@ -1,3 +1,5 @@
+/** @format */
+
 // Bad: Inconsistent function patterns, redundant code, no TypeScript
 
 // Format date - multiple similar functions
@@ -7,14 +9,14 @@ function formatDate1(date) {
 
 const formatDate2 = (date) => {
   const d = new Date(date);
-  return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`;
+  return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
 };
 
 // Format currency - inconsistent parameter order and style
-function formatMoney(amount, currency = 'USD') {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency
+function formatMoney(amount, currency = "USD") {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency,
   }).format(amount);
 }
 
@@ -26,7 +28,7 @@ const formatCurrency = (currency, amount) => {
 // Global variable - bad practice
 window.formatSettings = {
   decimalPlaces: 2,
-  thousandSeparator: ','
+  thousandSeparator: ",",
 };
 
 // Mutates input - side effect
@@ -35,16 +37,16 @@ const formatName = (user) => {
   return user;
 };
 
-// Inconsistent export style
-module.exports = {
-  formatDate: formatDate1, // Exposing internal implementation detail
+// ES6 export style
+export {
+  formatDate1 as formatDate, // Exposing internal implementation detail
   formatDate2,
   formatMoney,
-  formatCurrency // Redundant with formatMoney
+  formatCurrency, // Redundant with formatMoney
 };
 
 // Adding to window object - pollutes global namespace
 window.formatUtils = {
   formatDate: formatDate2,
-  formatMoney
+  formatMoney,
 };
