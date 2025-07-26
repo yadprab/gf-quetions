@@ -1,7 +1,7 @@
 // Bad: Over-fetching, memoization issues, and improper effect usage
 import { useState, useEffect, useMemo } from 'react';
 import { fetchCustomers } from '../../services/Api';
-import { formatMoney } from '../../utils/formatting';
+import { formatMoney } from '../../utils/formatting.ts';
 
 const DashboardPage = ({ userId }) => {
   const [stats, setStats] = useState({});
@@ -10,45 +10,21 @@ const DashboardPage = ({ userId }) => {
   const [error, setError] = useState(null);
   
   useEffect(() => {
-    let isMounted = true;
-    
-    const loadData = async () => {
-      try {
-        
-        const [customers, activity] = await Promise.all([
-          fetchCustomers(),
-          fetch(`/api/users/${userId}/activity`).then(res => res.json())
-        ]);
-        
-        if (isMounted) {
-         
-          const totalRevenue = customers.reduce(
-            (sum, customer) => sum + (customer.purchases?.reduce(
-              (s, p) => s + p.amount, 0
-            ) || 0), 0
-          );
-          
-          setStats({
-            totalCustomers: customers.length,
-            totalRevenue,
-            // ... other stats
-          });
-          
-          setRecentActivity(activity);
-        }
-      } catch (err) {
-        if (isMounted) setError(err.message);
-      } finally {
-        if (isMounted) setIsLoading(false);
-      }
+    // Mock data instead of API calls
+    const mockStats = {
+      totalCustomers: 25,
+      totalRevenue: 125000
     };
     
-    loadData();
+    const mockActivity = [
+      { id: '1', description: 'New customer registered', timestamp: new Date().toISOString() },
+      { id: '2', description: 'Payment received', timestamp: new Date(Date.now() - 3600000).toISOString() },
+      { id: '3', description: 'Invoice sent', timestamp: new Date(Date.now() - 7200000).toISOString() }
+    ];
     
-    // Missing cleanup for isMounted
-    return () => {
-      isMounted = false;
-    };
+    setStats(mockStats);
+    setRecentActivity(mockActivity);
+    setIsLoading(false);
   }, [userId]);
   
   // Inefficient calculation - runs on every render
@@ -75,7 +51,7 @@ const DashboardPage = ({ userId }) => {
   if (error) return <div>Error: {error}</div>;
   
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '10px', width: '100vw', minHeight: 'calc(100vh - 60px)', boxSizing: 'border-box', margin: 0 }}>
       <h1>Dashboard</h1>
       
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>

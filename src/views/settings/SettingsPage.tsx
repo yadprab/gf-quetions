@@ -23,36 +23,19 @@ const SettingsPage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   
-  // Side effect with missing dependencies
   useEffect(() => {
-    // Simulate API call
-    const fetchSettings = async () => {
-      try {
-        const response = await fetch('/api/settings');
-        const data = await response.json();
-        
-        // Mutating state directly - bad practice
-        setSettings(prev => ({
-          ...prev,
-          ...data,
-          // Overriding with defaults - potential bug if data is undefined
-          notifications: {
-            email: true,
-            push: false,
-            ...data?.notifications
-          }
-        }));
-      } catch (err) {
-        console.error('Failed to load settings', err);
-      }
+    // Mock settings data instead of API call
+    const mockSettings = {
+      notifications: {
+        email: true,
+        push: false
+      },
+      theme: 'light' as const,
+      preferences: {}
     };
     
-    fetchSettings();
-    
-    // Analytics side effect - should be in a separate effect
+    setSettings(mockSettings);
     trackPageView('settings');
-    
-    // Missing cleanup
   }, []);
   
   // Inefficient handler that recreates function on every render
@@ -66,33 +49,16 @@ const SettingsPage = () => {
     }));
   };
   
-  // Complex save handler with race condition potential
   const handleSave = async () => {
     setIsSaving(true);
     setSaveError(null);
     
     try {
-      // No validation before save
-      const response = await fetch('/api/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(settings)
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to save settings');
-      }
-      
-      // Inefficient state update
-      setSettings(await response.json());
-      
-      // Side effect in event handler
+      // Mock save success
+      await new Promise(resolve => setTimeout(resolve, 1000));
       showToast('Settings saved successfully');
-      
     } catch (err) {
-      setSaveError(err.message);
-      
-      // Side effect in catch block
+      setSaveError((err as Error).message);
       logError('SettingsSaveError', err);
     } finally {
       setIsSaving(false);
@@ -160,7 +126,7 @@ const SettingsPage = () => {
   };
   
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+    <div style={{ padding: '10px', width: '100vw', minHeight: 'calc(100vh - 60px)', boxSizing: 'border-box', margin: 0 }}>
       <h1>Settings</h1>
       
       <div style={{ display: 'flex', marginBottom: '20px' }}>
