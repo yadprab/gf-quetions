@@ -1,17 +1,10 @@
-// TODO: Refactor this later
-import React, { useState } from 'react';
-import { getCustomerData } from '../../utils/helpers/oldUtils';
-import '../../../styles/customerStyles/card.css';
+import React from 'react';
 
 export const CustomerCard = () => {
-  const [data] = useState(getCustomerData());
-  
   return (
-    <div className="card">
-      <div>Customer ID: {data.id}</div>
-      <div>Name: {data.name}</div>
-      <div>Email: {data.email}</div>
-      <a href="/customer-details">View Details</a>
+    <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
+      <h3>Customer Card</h3>
+      <p>Customer information will be displayed here.</p>
     </div>
   );
 };

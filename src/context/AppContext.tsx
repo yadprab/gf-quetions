@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState } from 'react';
 
 type AppContextType = {
@@ -27,19 +26,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<any[]>([]);
 
   useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const response = await fetch('/api/me');
-        const userData = await response.json();
-        setUser(userData);
-      } catch (err) {
-        setError('Failed to load user data');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadUser();
+    // Mock user data instead of API call
+    setUser({ id: 1, name: 'Demo User', email: 'demo@example.com' });
+    setIsLoading(false);
   }, []);
 
   const addNotification = (message: string) => {
