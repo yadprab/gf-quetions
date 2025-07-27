@@ -2,6 +2,11 @@ import { ENDPOINTS, STORAGE_KEYS } from "../config";
 import { API_CONFIG } from "../config/env";
 import useStore from "../store/useStore";
 import type { User, Customer, UserSettings } from "../types";
+import {
+  CARD_MOCK_DATA,
+  INVOICE_MANAGEMENT_MOCK_DATA,
+  RECENT_ACTIVITY_MOCK_DATA,
+} from "../mock";
 
 interface AuthResponse {
   token: string;
@@ -14,8 +19,7 @@ interface Activity {
 }
 
 const getAuthToken = (): string | null => {
-  // Get token from Zustand store or localStorage
-  return localStorage.getItem(STORAGE_KEYS.token); // Assuming token is still stored in localStorage for now
+  return localStorage.getItem(STORAGE_KEYS.token);
 };
 
 const request = async <T>(url: string, options?: RequestInit): Promise<T> => {
@@ -39,8 +43,70 @@ const request = async <T>(url: string, options?: RequestInit): Promise<T> => {
   return response.json();
 };
 
-export const fetchCustomers = (): Promise<Customer[]> => {
-  return request<Customer[]>(ENDPOINTS.users); // Assuming ENDPOINTS.users returns customers
+export const fetchUsers = () => {
+  return Promise.resolve({
+    ok: true,
+    status: 200,
+    statusText: "OK",
+    json: () => {
+      return {
+        id: "USR-001",
+        name: "John Doe",
+        email: "john@example.com",
+      };
+    },
+  });
+};
+
+export const fetchFeatureFlags = () => {
+  return Promise.resolve({
+    ok: true,
+    status: 200,
+    statusText: "OK",
+    json: () => {
+      return {
+        feature1: true,
+        feature2: false,
+      };
+    },
+  });
+};
+
+export const fetchCustomers = (signal?: AbortSignal) => {
+  // Mocking the API call to return CARD_MOCK_DATA
+  console.info("Fetching customers", signal);
+  return Promise.resolve({
+    id: "CUST-001",
+    name: "John Doe",
+    email: "john@example.com",
+  });
+};
+
+export const fetchStats = (
+  signal?: AbortSignal
+): Promise<typeof CARD_MOCK_DATA> => {
+  // Mocking the API call to return CARD_MOCK_DATA
+  console.info("Fetching customers", signal);
+  return Promise.resolve(CARD_MOCK_DATA);
+};
+
+export const fetchRecentActivity = (
+  signal?: AbortSignal
+): Promise<typeof RECENT_ACTIVITY_MOCK_DATA> => {
+  console.info("Fetching recent activity", signal);
+  // Mocking the API call to return CARD_MOCK_DATA
+  return Promise.resolve(RECENT_ACTIVITY_MOCK_DATA);
+};
+
+export const fetchInvoiceData = (signal?: AbortSignal) => {
+  console.info("Fetching invoice data", signal);
+  // Mocking the API call to return CARD_MOCK_DATA
+  return Promise.resolve({
+    ok: true,
+    status: 200,
+    statusText: "OK",
+    json: () => INVOICE_MANAGEMENT_MOCK_DATA,
+  });
 };
 
 export const updateCustomer = (
@@ -72,9 +138,8 @@ export const login = async (
   }
 
   const data: AuthResponse = await response.json();
-  // Store token in localStorage for now, will move to Zustand later
   localStorage.setItem(STORAGE_KEYS.token, data.token);
-  useStore.getState().setUser(data.user); // Update user in Zustand store
+  useStore.getState().setUser(data.user);
   return data;
 };
 
@@ -87,12 +152,12 @@ export const fetchUserActivity = (userId: string): Promise<Activity[]> => {
 };
 
 export const fetchSettings = (): Promise<UserSettings> => {
-  return request<UserSettings>(`/api/settings`); // Assuming a settings endpoint
+  return request<UserSettings>(`/api/settings`);
 };
 
 export const saveSettings = (settings: UserSettings): Promise<UserSettings> => {
   return request<UserSettings>(`/api/settings`, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(settings),
   });
 };

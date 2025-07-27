@@ -16,9 +16,9 @@ export interface CartItem {
 }
 
 export interface Customer {
-  id: string;
+  id?: string;
   name: string;
-  email: string;
+  email?: string;
   purchases?: { amount: number }[];
 }
 
@@ -27,10 +27,10 @@ export interface Invoice {
   customer: Customer;
   amount: number;
   dueDate: string;
-  status: string;
+  status: "Paid" | "Disputed" | "Overdue" | "Pending";
   lastUpdated?: Date;
-  daysOverdue?: number;
-  [key: string]: unknown;
+  daysOverdue: number | null;
+  comments: number;
 }
 
 export interface InvoicesApiResponse {
@@ -44,8 +44,8 @@ export interface UserSettings {
     push: boolean;
     sms?: boolean;
   };
-  theme: 'light' | 'dark' | 'system';
-  preferences: Record<string, any>;
+  theme: "light" | "dark" | "system";
+  preferences: Record<string, unknown>;
 }
 
 export interface SettingsApiResponse {

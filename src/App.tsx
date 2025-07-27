@@ -36,8 +36,12 @@ function App() {
         <Routes>
           <Route path="/" element={<h1>Customer Portal</h1>} />
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/customers" element={<CustomerDetailsPage />} />
           <Route path="/customer-details" element={<CustomerDetailsPage />} />
+          <Route path="/customers" element={<p>Customers List</p>} />
+          <Route path="/analytics" element={<p>Analytics</p>} />
+          <Route path="/collections" element={<p>Collections</p>} />
+          <Route path="/payments" element={<p>Payments</p>} />
+          <Route path="/activity" element={<p>Activity</p>} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/settings/:tab" element={<SettingsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

@@ -2,16 +2,25 @@
 import { useEffect, useState } from "react";
 import { formatDate } from "../../utils/formatting";
 import { Link } from "react-router-dom";
+import { fetchCustomers } from "../../services/apiService";
 
 const CustomerDetailsPage = () => {
-  const [customer, setCustomer] = useState({
-    id: "CUST-001",
-    name: "John Doe",
-    email: "john@example.com",
+  const [customer, setCustomer] = useState<{
+    id: string;
+    name: string;
+    email: string;
+  }>({
+    id: "",
+    name: "",
+    email: "",
   });
 
   useEffect(() => {
-    // No need to fetch data, it's static now
+    const getCustomer = async () => {
+      const data = await fetchCustomers();
+      setCustomer(data);
+    };
+    getCustomer();
   }, []);
 
   return (
@@ -23,7 +32,7 @@ const CustomerDetailsPage = () => {
         <div>Email: {customer.email}</div>
         <div>Member Since: {formatDate(new Date())}</div>
       </div>
-      <Link to="/" className="text-primary hover:underline">
+      <Link to="/customers" className="text-primary hover:underline">
         Back to List
       </Link>
     </div>

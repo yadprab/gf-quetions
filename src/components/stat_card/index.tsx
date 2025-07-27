@@ -1,5 +1,7 @@
 import React from "react";
 
+import { GradientChip } from "../../widgets/gradient_chip";
+
 interface StatCardProps {
   label: string;
   value: string;
@@ -20,15 +22,15 @@ const StatCard: React.FC<StatCardProps> = ({
   return (
     <div className="bg-card rounded-xl p-6 shadow-sm flex flex-col gap-2">
       <div className="flex justify-between items-start">
-        <div
-          className={`w-12 h-12 rounded-lg flex items-center justify-center text-white ${iconBgColor}`}
-        >
+        <GradientChip from={iconBgColor} to={iconBgColor}>
           {icon}
-        </div>
+        </GradientChip>
         {percentageChange && (
           <span
             className={`text-sm font-medium ${
-              percentageColor === "success" ? "text-success" : "text-error"
+              percentageColor === "success"
+                ? "text-green-400"
+                : "text-shadow-red-400"
             }`}
           >
             {percentageChange}
@@ -36,7 +38,7 @@ const StatCard: React.FC<StatCardProps> = ({
         )}
       </div>
       <span className="text-sm text-secondary">{label}</span>
-      <span className="text-4xl font-bold text-foreground">{value}</span>
+      <span className="text-2xl font-bold text-foreground">{value}</span>
     </div>
   );
 };

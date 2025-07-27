@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { STORAGE_KEYS } from "../config";
 
 import type { User, CartItem, Notification } from "../types";
+import { fetchFeatureFlags, fetchUsers } from "../services/apiService";
 
 interface StoreState {
   theme: "light" | "dark";
@@ -11,12 +12,14 @@ interface StoreState {
   notifications: Notification[];
   cart: CartItem[];
   featureFlags: Record<string, boolean>;
+  sideBarOpened: boolean;
 }
 
 interface StoreActions {
   toggleTheme: () => void;
   setUser: (user: User | null) => void;
   setError: (error: string | null) => void;
+  setLoading: (isLoading: boolean) => void;
   addNotification: (message: string) => void;
   removeNotification: (id: number) => void;
   addToCart: (item: Omit<CartItem, "quantity">) => void;
@@ -24,22 +27,24 @@ interface StoreActions {
   loadFeatureFlags: () => Promise<void>;
   isFeatureEnabled: (featureName: string) => boolean;
   overrideFeatureFlag: (feature: string, enabled: boolean) => void;
+  toggleSidebar: () => void;
 }
 
 type AppStore = StoreState & StoreActions;
 
 const useStore = create<AppStore>((set, get) => ({
-  theme: (localStorage.getItem(STORAGE_KEYS.theme) as 'light' | 'dark') || 'light',
+  theme:
+    (localStorage.getItem(STORAGE_KEYS.theme) as "light" | "dark") || "light",
   toggleTheme: () =>
     set((state) => {
-      const newTheme = state.theme === 'light' ? 'dark' : 'light';
+      const newTheme = state.theme === "light" ? "dark" : "light";
       localStorage.setItem(STORAGE_KEYS.theme, newTheme);
       return { theme: newTheme };
     }),
 
-  // User state
   user: null,
   isLoading: true,
+  setLoading: (isLoading: boolean) => set({ isLoading }),
   error: null,
   setUser: (user) => set({ user }),
   setError: (error) => set({ error }),
@@ -94,7 +99,7 @@ const useStore = create<AppStore>((set, get) => ({
   },
   loadFeatureFlags: async () => {
     try {
-      const response = await fetch("/api/feature-flags");
+      const response = await fetchFeatureFlags();
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -108,7 +113,7 @@ const useStore = create<AppStore>((set, get) => ({
   loadUser: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await fetch("/api/me");
+      const response = await fetchUsers();
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -122,6 +127,11 @@ const useStore = create<AppStore>((set, get) => ({
       set({ isLoading: false });
     }
   },
+
+  // Sidebar state
+  sideBarOpened: true, // Default to opened
+  toggleSidebar: () =>
+    set((state) => ({ sideBarOpened: !state.sideBarOpened })),
 }));
 
 export default useStore;

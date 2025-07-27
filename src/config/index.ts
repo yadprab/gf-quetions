@@ -12,6 +12,7 @@ export const ENDPOINTS = {
   },
   users: "/users",
   products: "/products",
+  featureFlags: "/api/feature-flags",
 };
 
 // Local storage keys

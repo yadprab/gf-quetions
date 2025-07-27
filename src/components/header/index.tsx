@@ -1,34 +1,43 @@
 import useStore from "../../store/useStore";
 import Button from "../../widgets/button";
-import { IoBookmarkOutline } from "react-icons/io5";
+import { BsLayoutSidebar } from "react-icons/bs";
+import { BUTTON_SIZES, BUTTON_TYPES } from "../../widgets/button/constants";
+import { GradientChip } from "../../widgets/gradient_chip";
+import { GRADIENT_COLORS } from "../../widgets/gradient_chip/constants";
 
 const Header = () => {
   const { theme, toggleTheme } = useStore();
 
   return (
-    <header className="flex justify-between items-center p-4 bg-card text-foreground shadow-sm border-b border-border">
+    <header className="flex justify-between items-center p-4 bg-card border-b border-gray-300">
       <div className="flex items-center gap-2">
-        <IoBookmarkOutline className="text-2xl text-secondary" />
+        <Button
+          variant={BUTTON_TYPES.SECONDARY}
+          size={BUTTON_SIZES.SMALL}
+          onClick={() => useStore.getState().toggleSidebar()}
+        >
+          <BsLayoutSidebar />
+        </Button>
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl">
-            G
-          </div>
+          <GradientChip>G</GradientChip>
           <span className="font-bold text-xl text-foreground">Growfin</span>
         </div>
       </div>
-
       <div className="flex items-center gap-4">
         <Button
           onClick={toggleTheme}
-          className="p-2 rounded-md bg-foreground text-background"
-          color="light"
-          size="sm"
+          variant={BUTTON_TYPES.SECONDARY}
+          size={BUTTON_SIZES.SMALL}
         >
           {theme === "light" ? "🌙" : "☀️"}
         </Button>
-        <div className="w-10 h-10 rounded-full bg-success flex items-center justify-center text-white font-bold">
+        <GradientChip
+          isRounded
+          from={GRADIENT_COLORS.GREEN}
+          to={GRADIENT_COLORS.GREEN}
+        >
           U
-        </div>
+        </GradientChip>
       </div>
     </header>
   );

@@ -6,32 +6,40 @@ interface NavItemProps {
   to: string;
   icon: React.ReactNode;
   label: string;
+  isSidebarOpened: boolean;
 }
 
 const navLink = tv({
-  base: "block rounded-md",
+  base: "block p-3 rounded-lg font-medium flex items-center hover:bg-background",
   variants: {
     active: {
-      true: "bg-active-nav-bg text-primary",
-      false: "text-foreground",
+      true: "bg-active-nav-bg text-primary border-e-[2px] border-primary",
+    },
+    isSidebarOpened: {
+      true: "gap-3",
+      false: "justify-center",
     },
   },
 });
 
-const NavItem: React.FC<NavItemProps> = ({ to, icon, label }) => {
+const NavItem: React.FC<NavItemProps> = ({
+  to,
+  icon,
+  label,
+  isSidebarOpened,
+}) => {
   return (
     <NavLink
       to={to}
       className={({ isActive }) =>
         navLink({
           active: isActive,
-          class:
-            "flex items-center gap-3 p-3 rounded-lg font-medium hover:bg-background",
+          isSidebarOpened: isSidebarOpened,
         })
       }
     >
       <span className="text-lg">{icon}</span>
-      <span>{label}</span>
+      {isSidebarOpened && <span>{label}</span>}
     </NavLink>
   );
 };
