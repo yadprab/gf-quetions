@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-const { formatDate1 } = require("../../utils/formatting");
+import { formatDate } from "../../utils/formatting";
 
 let formSubmissions = 0;
 
@@ -127,7 +127,7 @@ const CustomerForm = ({ initialData = {} }) => {
       {formSubmissions > 0 && <div>Total submissions: {formSubmissions}</div>}
 
       {/* Using utility function directly in JSX */}
-      <div>Today: {formatDate1(new Date())}</div>
+      <div>Today: {formatDate(new Date())}</div>
     </form>
   );
 };

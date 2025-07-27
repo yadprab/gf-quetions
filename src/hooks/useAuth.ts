@@ -1,17 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login as apiLogin, fetchUser } from '../services/apiService';
+import useStore from '../store/useStore';
+import { ENDPOINTS } from '../config';
+import { API_CONFIG } from '../config/env';
 
-let refreshTimeout;
+let refreshTimeout: NodeJS.Timeout;
 
 export const useAuth = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { user, setUser, isLoading, error, setError } = useStore();
   const navigate = useNavigate();
 
   const refreshToken = useCallback(async () => {
     try {
-      const response = await fetch('/api/auth/refresh', {
+      const response = await fetch(`${API_CONFIG.BASE_URL}${ENDPOINTS.auth.refresh}`, {
+        method: 'POST',
         credentials: 'include',
       });
       
@@ -37,57 +40,36 @@ export const useAuth = () => {
       try {
         const token = await refreshToken();
         if (!token) {
-          setLoading(false);
           return;
         }
         
-        const userResponse = await fetch('/api/user', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        
-        if (!userResponse.ok) throw new Error('Failed to fetch user');
-        
-        const userData = await userResponse.json();
+        const userData = await fetchUser(user?.id || 'me'); // Assuming 'me' is a valid ID or endpoint for current user
         setUser(userData);
       } catch (err) {
         console.error('Auth check failed:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
       }
     };
     
     checkAuth();
-  }, []);
+  }, [refreshToken, setUser, setError, user?.id]);
 
-  const login = async (email, password) => {
+  const login = async (email: string, password: string) => {
     try {
-      setLoading(true);
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include'
-      });
-      
-      if (!response.ok) throw new Error('Login failed');
-      
-      const data = await response.json();
+      const data = await apiLogin(email, password);
       setUser(data.user);
       navigate('/dashboard');
       
       return true;
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
       return false;
-    } finally {
-      setLoading(false);
     }
   };
 
   const logout = async () => {
     try {
-      fetch('/api/auth/logout', {
+      fetch(`${API_CONFIG.BASE_URL}${ENDPOINTS.auth.logout}`, {
         method: 'POST',
         credentials: 'include'
       });
@@ -100,14 +82,14 @@ export const useAuth = () => {
     }
   };
 
-  const hasPermission = (permission) => {
+  const hasPermission = (permission: string) => {
     if (!user || !user.permissions) return false;
     return user.permissions.includes(permission);
   };
 
   return {
     user,
-    loading,
+    isLoading,
     error,
     login,
     logout,
