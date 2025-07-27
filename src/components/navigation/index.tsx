@@ -16,24 +16,14 @@ import Button from "../../widgets/button";
 import { BUTTON_SIZES, BUTTON_TYPES } from "../../widgets/button/constants";
 import { BsLayoutSidebar } from "react-icons/bs";
 
-// const navigationClass = tv({
-//   base: "p-6 border-r border-gray-300 flex flex-col justify-between transition-all duration-300 ease-in-out",
-//   variants: {
-//     sideBarOpened: {
-//       true: "w-64",
-//       false: "w-16 ps-2 pe-2",
-//     },
-//   },
-// });
-
 const navigationClass = tv({
-  base: `p-6 fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out
+  base: `p-6 fixed inset-y-0 left-0 z-50 transform transition-transform md:transition-all duration-300 ease-in-out
     md:relative md:translate-x-0 md:flex md:flex-col
     bg-card border-r border-gray-300 flex-col justify-between`,
   variants: {
     sideBarOpened: {
       true: "translate-x-0 w-64",
-      false: "-translate-x-full w-0 md:w-16",
+      false: "-translate-x-full w-0 md:w-16 md:ps-2 md:pe-2",
     },
   },
 });
