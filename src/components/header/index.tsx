@@ -6,7 +6,7 @@ import { GradientChip } from "../../widgets/gradient_chip";
 import { GRADIENT_COLORS } from "../../widgets/gradient_chip/constants";
 
 const Header = () => {
-  const { theme, toggleTheme } = useStore();
+  const { theme, toggleTheme, toggleSidebar } = useStore();
 
   return (
     <header className="flex justify-between items-center p-4 bg-card border-b border-gray-300">
@@ -14,7 +14,7 @@ const Header = () => {
         <Button
           variant={BUTTON_TYPES.SECONDARY}
           size={BUTTON_SIZES.SMALL}
-          onClick={() => useStore.getState().toggleSidebar()}
+          onClick={toggleSidebar}
         >
           <BsLayoutSidebar />
         </Button>

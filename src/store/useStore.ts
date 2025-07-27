@@ -129,7 +129,7 @@ const useStore = create<AppStore>((set, get) => ({
   },
 
   // Sidebar state
-  sideBarOpened: true, // Default to opened
+  sideBarOpened: false,
   toggleSidebar: () =>
     set((state) => ({ sideBarOpened: !state.sideBarOpened })),
 }));

@@ -39,7 +39,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
   activityType = "payment_received",
 }) => {
   return (
-    <div className="flex justify-between items-start bg-gray-100 rounded-lg p-4">
+    <div className="flex justify-between items-start bg-card rounded-lg p-4">
       <div className="flex flex-col">
         <span className={activityTypeColorClass({ type: activityType })}>
           {title}

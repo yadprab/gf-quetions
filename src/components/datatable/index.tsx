@@ -109,7 +109,7 @@ export const DataTableContainer = () => {
 
   return (
     <div className="bg-card rounded-xl p-6 shadow-sm">
-      <div className="mb-5 flex items-center gap-4 justify-between">
+      <div className="mb-5 md:flex grid items-center gap-4 justify-between">
         <h2 className="text-xl font-bold text-foreground mb-4">
           Invoice Management
         </h2>
@@ -139,20 +139,28 @@ export const DataTableContainer = () => {
         </div>
       </div>
 
-      <div className="bg-background-white rounded-lg overflow-hidden">
+      <div className="bg-card rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse table-auto">
             <thead>
-              <tr className="bg-background-white border-b border-gray-300 text-left text-gray-600">
-                <th className="py-6 cursor-pointer font-medium">Invoice ID</th>
-                <th className="py-6 cursor-pointer font-medium">Customer</th>
-                <th className="py-6 cursor-pointer font-medium">Amount</th>
-                <th className="py-6 cursor-pointer font-medium">Due Date</th>
-                <th className="py-6 cursor-pointer font-medium">
+              <tr className="bg-card border-b border-gray-300 text-left text-gray-500">
+                <th className="py-6 px-4 md:px-0 cursor-pointer font-medium">
+                  Invoice ID
+                </th>
+                <th className="py-6 px-4 md:px-0 cursor-pointer font-medium">
+                  Customer
+                </th>
+                <th className="py-6 px-4 md:px-0 cursor-pointer font-medium">
+                  Amount
+                </th>
+                <th className="py-6 px-4 md:px-0 cursor-pointer font-medium">
+                  Due Date
+                </th>
+                <th className="py-6 px-4 md:px-0 cursor-pointer font-medium">
                   Days Overdue
                 </th>
-                <th className="py-6 font-medium">Status</th>
-                <th className="py-6 font-medium">Comments</th>
+                <th className="py-6 px-4 md:px-0 font-medium">Status</th>
+                <th className="py-6 px-4 md:px-0 font-medium">Comments</th>
               </tr>
             </thead>
             <tbody>
@@ -166,21 +174,23 @@ export const DataTableContainer = () => {
                 filteredAndSortedInvoices.map((invoice) => (
                   <tr
                     key={invoice.id}
-                    className={`border-b border-gray-300 bg-background-white hover:bg-gray-100`}
+                    className={`border-b border-gray-300 bg-card hover:bg-gray-200`}
                   >
-                    <td className="py-6 font-medium w-38">{invoice.id}</td>
-                    <td className="py-6 text-gray-600  w-42">
+                    <td className="py-6 px-4 md:px-0 font-medium w-38">
+                      {invoice.id}
+                    </td>
+                    <td className="py-6 px-4 md:px-0 text-gray-500  w-42">
                       {invoice.customer?.name || "N/A"}
                     </td>
-                    <td className="py-6 font-medium w-38">
+                    <td className="py-6 px-4 md:px-0 font-medium w-38">
                       {formatCurrency(invoice.amount)}
                     </td>
-                    <td className="py-6 text-gray-600 w-38">
+                    <td className="py-6 px-4 md:px-0 text-gray-500 w-38">
                       <div>
                         {new Date(invoice.dueDate).toLocaleDateString()}
                       </div>
                     </td>
-                    <td className="py-6 w-60">
+                    <td className="py-6 px-4 md:px-0 w-60">
                       {(invoice.daysOverdue || 0) > 0 ? (
                         <div className="text-sm text-red-500">
                           {invoice.daysOverdue} days overdue
@@ -189,13 +199,13 @@ export const DataTableContainer = () => {
                         "-"
                       )}
                     </td>
-                    <td className="py-6 w-38">
+                    <td className="py-6 px-4 md:px-0 w-38">
                       <StatusChip
                         type={STATUS_TYPE[invoice.status]}
                         content={invoice.status}
                       />
                     </td>
-                    <td className="py-6 flex items-center gap-1 text-gray-600 w-38">
+                    <td className="py-6 px-4 md:px-0 flex items-center gap-1 text-gray-500 w-38">
                       <GoComment />
                       {invoice.comments}
                     </td>

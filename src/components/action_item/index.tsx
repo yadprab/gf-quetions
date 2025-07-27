@@ -27,7 +27,7 @@ const ActionItem: React.FC<ActionItemProps> = ({
   statusColor,
 }) => {
   return (
-    <div className="bg-gray-100 rounded-lg p-4 flex justify-between items-center">
+    <div className="bg-card rounded-lg p-4 flex justify-between items-center">
       <div className="flex flex-col">
         <span className="font-medium text-foreground">{title}</span>
         <span className="text-sm text-secondary">{subtitle}</span>
