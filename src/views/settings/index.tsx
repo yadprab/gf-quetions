@@ -29,7 +29,7 @@ const SettingsPage = () => {
     loadSettings();
   }, []);
   
-  const handleInputChange = useCallback((section: keyof UserSettings, key: string, value: any) => {
+  const handleInputChange = useCallback((section: keyof UserSettings, key: string, value: string | boolean) => {
     setSettings(prev => ({
       ...prev,
       [section]: {

@@ -44,6 +44,26 @@ export const CARD_MOCK_DATA = [
   },
 ];
 
+const moreInvoiceData: Invoice[] = Array.from({ length: 100 }, (_, i) => {
+  const id = 5 + i;
+  const statusOptions = ["Paid", "Pending", "Overdue", "Disputed"];
+  const status = statusOptions[Math.floor(Math.random() * statusOptions.length)];
+  const dueDate = new Date();
+  dueDate.setDate(dueDate.getDate() + Math.floor(Math.random() * 60) - 30);
+
+  return {
+    id: `INV-0${id < 10 ? '0' + id : id}`,
+    customer: {
+      name: `Customer ${id}`,
+    },
+    amount: Math.floor(Math.random() * 50000) + 1000,
+    dueDate: dueDate.toISOString().split('T')[0],
+    daysOverdue: status === "Overdue" ? Math.floor(Math.random() * 30) + 1 : null,
+    status: status as "Paid" | "Pending" | "Overdue" | "Disputed",
+    comments: Math.floor(Math.random() * 10),
+  };
+});
+
 export const INVOICE_MANAGEMENT_MOCK_DATA: { data: Invoice[] } = {
   data: [
     {
@@ -101,6 +121,7 @@ export const INVOICE_MANAGEMENT_MOCK_DATA: { data: Invoice[] } = {
       status: "Overdue",
       comments: 2,
     },
+    ...moreInvoiceData,
   ],
 };
 

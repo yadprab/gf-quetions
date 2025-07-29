@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, CSSProperties } from "react";
 import { RiSearchLine } from "react-icons/ri";
 import { GoComment } from "react-icons/go";
+import { FixedSizeList as List } from "react-window";
 
 import Button from "../../widgets/button";
 import type { Invoice } from "../../types";
@@ -83,6 +84,47 @@ export const DataTableContainer = () => {
     return result;
   }, [invoices, searchTerm, statusFilter]);
 
+  const Row = ({ index, style, data }: { index: number, style: CSSProperties, data: Invoice[] }) => {
+    const invoice = data[index];
+    return (
+      <div style={style} className={`border-b border-gray-300 bg-card hover:bg-gray-200 flex items-center`}>
+        <div className="py-6 px-4 md:px-0 font-medium w-38">
+          {invoice.id}
+        </div>
+        <div className="py-6 px-4 md:px-0 text-gray-500  w-42">
+          {invoice.customer?.name || "N/A"}
+        </div>
+        <div className="py-6 px-4 md:px-0 font-medium w-38">
+          {formatCurrency(invoice.amount)}
+        </div>
+        <div className="py-6 px-4 md:px-0 text-gray-500 w-38">
+          <div>
+            {new Date(invoice.dueDate).toLocaleDateString()}
+          </div>
+        </div>
+        <div className="py-6 px-4 md:px-0 w-60">
+          {(invoice.daysOverdue || 0) > 0 ? (
+            <div className="text-sm text-red-500">
+              {invoice.daysOverdue} days overdue
+            </div>
+          ) : (
+            "-"
+          )}
+        </div>
+        <div className="py-6 px-4 md:px-0 w-38">
+          <StatusChip
+            type={STATUS_TYPE[invoice.status]}
+            content={invoice.status}
+          />
+        </div>
+        <div className="py-6 px-4 md:px-0 flex items-center gap-1 text-gray-500 w-38">
+          <GoComment />
+          {invoice.comments}
+        </div>
+      </div>
+    );
+  };
+
   if (loading && invoices.length === 0) {
     return (
       <div className="flex justify-center items-center h-72">
@@ -141,79 +183,32 @@ export const DataTableContainer = () => {
 
       <div className="bg-card rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse table-auto">
-            <thead>
-              <tr className="bg-card border-b border-gray-300 text-left text-gray-500">
-                <th className="py-6 px-4 md:px-0 cursor-pointer font-medium">
-                  Invoice ID
-                </th>
-                <th className="py-6 px-4 md:px-0 cursor-pointer font-medium">
-                  Customer
-                </th>
-                <th className="py-6 px-4 md:px-0 cursor-pointer font-medium">
-                  Amount
-                </th>
-                <th className="py-6 px-4 md:px-0 cursor-pointer font-medium">
-                  Due Date
-                </th>
-                <th className="py-6 px-4 md:px-0 cursor-pointer font-medium">
-                  Days Overdue
-                </th>
-                <th className="py-6 px-4 md:px-0 font-medium">Status</th>
-                <th className="py-6 px-4 md:px-0 font-medium">Comments</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredAndSortedInvoices.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="text-center p-8">
-                    No invoices found matching your criteria
-                  </td>
-                </tr>
-              ) : (
-                filteredAndSortedInvoices.map((invoice) => (
-                  <tr
-                    key={invoice.id}
-                    className={`border-b border-gray-300 bg-card hover:bg-gray-200`}
-                  >
-                    <td className="py-6 px-4 md:px-0 font-medium w-38">
-                      {invoice.id}
-                    </td>
-                    <td className="py-6 px-4 md:px-0 text-gray-500  w-42">
-                      {invoice.customer?.name || "N/A"}
-                    </td>
-                    <td className="py-6 px-4 md:px-0 font-medium w-38">
-                      {formatCurrency(invoice.amount)}
-                    </td>
-                    <td className="py-6 px-4 md:px-0 text-gray-500 w-38">
-                      <div>
-                        {new Date(invoice.dueDate).toLocaleDateString()}
-                      </div>
-                    </td>
-                    <td className="py-6 px-4 md:px-0 w-60">
-                      {(invoice.daysOverdue || 0) > 0 ? (
-                        <div className="text-sm text-red-500">
-                          {invoice.daysOverdue} days overdue
-                        </div>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                    <td className="py-6 px-4 md:px-0 w-38">
-                      <StatusChip
-                        type={STATUS_TYPE[invoice.status]}
-                        content={invoice.status}
-                      />
-                    </td>
-                    <td className="py-6 px-4 md:px-0 flex items-center gap-1 text-gray-500 w-38">
-                      <GoComment />
-                      {invoice.comments}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+          <div className="w-full border-collapse table-auto">
+            <div className="bg-card border-b border-gray-300 text-left text-gray-500 flex">
+              <div className="py-6 px-4 md:px-0 cursor-pointer font-medium w-38">Invoice ID</div>
+              <div className="py-6 px-4 md:px-0 cursor-pointer font-medium w-42">Customer</div>
+              <div className="py-6 px-4 md:px-0 cursor-pointer font-medium w-38">Amount</div>
+              <div className="py-6 px-4 md:px-0 cursor-pointer font-medium w-38">Due Date</div>
+              <div className="py-6 px-4 md:px-0 cursor-pointer font-medium w-60">Days Overdue</div>
+              <div className="py-6 px-4 md:px-0 font-medium w-38">Status</div>
+              <div className="py-6 px-4 md:px-0 font-medium w-38">Comments</div>
+            </div>
+            {filteredAndSortedInvoices.length === 0 ? (
+              <div className="text-center p-8">
+                No invoices found matching your criteria
+              </div>
+            ) : (
+              <List
+                height={400}
+                itemCount={filteredAndSortedInvoices.length}
+                itemSize={65}
+                width={'100%'}
+                itemData={filteredAndSortedInvoices}
+              >
+                {Row}
+              </List>
+            )}
+          </div>
         </div>
       </div>
     </div>
