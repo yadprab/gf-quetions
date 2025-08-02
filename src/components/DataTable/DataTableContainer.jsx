@@ -1,12 +1,22 @@
-import React, { useState, useEffect, useCallback, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { AppContext } from '../../context/AppContext';
+import { formatCurrency } from '../../utils/formatting';
+import { useFetchInvoices } from './hooks/useFetchInvoices';
 
 export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) => {
   // Context and state
   const { user } = useContext(AppContext);
-  const [invoices, setInvoices] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const {
+    invoices,
+    loading,
+    error,
+    collaborators,
+    lastUpdated,
+    fetchInvoices,
+    updateInvoiceStatus,
+    deleteInvoices
+  } = useFetchInvoices(endpoint);
+  
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
   const [sortConfig, setSortConfig] = useState({ key: 'dueDate', direction: 'asc' });
@@ -17,24 +27,7 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
     daysOverdue: 0
   });
   const [selectedInvoices, setSelectedInvoices] = useState([]);
-  const [collaborators, setCollaborators] = useState({});
-  const [lastUpdated, setLastUpdated] = useState(new Date());
 
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
-
-  // Calculate days overdue
-  const getDaysOverdue = (dueDate) => {
-    const today = new Date();
-    const due = new Date(dueDate);
-    const diffTime = today - due;
-    return Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
-  };
 
   // Get status style
   const getInvoiceStatusStyle = (status) => {
@@ -47,57 +40,6 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
     return styles[status] || { backgroundColor: '#f7fafc', color: '#4a5568' };
   };
 
-
-  // Fetch invoices
-  const fetchInvoices = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`${endpoint}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      
-      const result = await response.json();
-      const now = new Date();
-      
-      // Process invoices
-      const processedInvoices = result.map(invoice => ({
-        ...invoice,
-        lastUpdated: new Date(now - Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 2)),
-        daysOverdue: getDaysOverdue(invoice.dueDate)
-      }));
-      
-      setInvoices(processedInvoices);
-      setLastUpdated(new Date());
-      
-      // Simulate collaborators
-      const simulatedCollaborators = {};
-      const actions = ['editing', 'reviewing', 'commenting on'];
-      const names = ['Alex Johnson', 'Sam Wilson', 'Taylor Smith', 'Jordan Lee'];
-      
-      processedInvoices.slice(0, 3).forEach(invoice => {
-        simulatedCollaborators[invoice.id] = {
-          name: names[Math.floor(Math.random() * names.length)],
-          action: actions[Math.floor(Math.random() * actions.length)]
-        };
-      });
-      
-      setCollaborators(simulatedCollaborators);
-      setError(null);
-    } catch (err) {
-      console.error('Error fetching invoices:', err);
-      setError('Failed to load invoices. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  }, [endpoint]);
 
   // Handle sorting
   const handleSort = (key) => {
@@ -117,29 +59,7 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
 
   // Handle status update
   const handleStatusUpdate = async (invoiceId, newStatus) => {
-    try {
-      await fetch(`${endpoint}/${invoiceId}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
-      
-      
-      setInvoices(prevInvoices =>
-        prevInvoices.map(invoice =>
-          invoice.id === invoiceId
-            ? { ...invoice, status: newStatus, updatedAt: new Date() }
-            : invoice
-        )
-      );
-    } catch (err) {
-      console.error('Failed to update status:', err);
-      
-      fetchInvoices();
-    }
+    await updateInvoiceStatus(invoiceId, newStatus);
   };
 
   // Filter and sort invoices
@@ -212,19 +132,8 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
           return;
         }
         
-        await Promise.all(
-          selectedInvoices.map(id => 
-            fetch(`${endpoint}/${id}`, { 
-              method: 'DELETE',
-              headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-              }
-            })
-          )
-        );
-        
+        await deleteInvoices(selectedInvoices);
         setSelectedInvoices([]);
-        fetchInvoices();
       } else if (action === 'export') {
         // Implement export functionality
         console.log('Exporting:', selectedInvoices);

@@ -1,4 +1,4 @@
-import { DataTableContainer } from "../DataTable/DataTableContainer"
+import DataTableContainer from "../DataTable/DataTableContainer.jsx"
 
 const InvoiceManagement = () => {
   return (

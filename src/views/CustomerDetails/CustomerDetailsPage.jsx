@@ -1,7 +1,7 @@
 // Customer details view - created by dev1
 import React, { useEffect, useState } from 'react';
 import { getCustomerData } from '../../utils/helpers/oldUtils';
-import { formatDate } from '../../utils/helpers/oldUtils'; // Duplicate import
+import { formatDate } from '../../utils/formatting';
 import { Link } from 'react-router-dom';
 
 const CustomerDetailsPage = (props) => {

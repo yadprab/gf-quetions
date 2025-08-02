@@ -1,7 +1,7 @@
 // Bad: Inconsistent function patterns, redundant code, no TypeScript
 
 // Format date - multiple similar functions
-function formatDate1(date) {
+function formatDate(date) {
   return new Date(date).toLocaleDateString();
 }
 
@@ -11,17 +11,13 @@ const formatDate2 = (date) => {
 };
 
 // Format currency - inconsistent parameter order and style
-function formatMoney(amount, currency = 'USD') {
+function formatCurrency(amount, currency = 'USD') {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency
   }).format(amount);
 }
 
-// Duplicate functionality with different names
-const formatCurrency = (currency, amount) => {
-  return formatMoney(amount, currency);
-};
 
 // Global variable - bad practice
 window.formatSettings = {
@@ -35,18 +31,11 @@ const formatName = (user) => {
   return user;
 };
 
-// Inconsistent export style
-// module.exports = {
-//   formatDate: formatDate1, // Exposing internal implementation detail
-//   formatDate2,
-//   formatMoney,
-//   formatCurrency // Redundant with formatMoney
-// };
-export const formatDate = formatDate1; // Exposing internal implementation detail
-export { formatDate2, formatMoney, formatCurrency };
+
+export { formatDate, formatDate2, formatCurrency };
 
 // Adding to window object - pollutes global namespace
 window.formatUtils = {
   formatDate: formatDate2,
-  formatMoney
+  formatCurrency: formatCurrency
 };
