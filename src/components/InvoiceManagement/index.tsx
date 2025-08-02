@@ -2,7 +2,7 @@ import { DataTableContainer } from "../DataTable/DataTableContainer"
 
 const InvoiceManagement = () => {
   return (
-    <div><DataTableContainer   /></div>
+    <div><DataTableContainer endpoint={`http://localhost:3001/invoices`} initialPageSize={5} /></div>
   )
 }
 
