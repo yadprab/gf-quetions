@@ -1,0 +1,196 @@
+{
+  "invoices": [
+    {
+      "id": "INV-001",
+      "invoiceNumber": "INV-001",
+      "customer": {
+        "name": "Acme Corporation",
+        "email": "billing@acme.com",
+        "address": "123 Business Ave, City, State 12345"
+      },
+      "amount": 2500.00,
+      "dueDate": "2025-01-15",
+      "status": "pending",
+      "createdAt": "2024-12-15T10:00:00Z",
+      "updatedAt": "2024-12-15T10:00:00Z"
+    },
+    {
+      "id": "INV-002",
+      "invoiceNumber": "INV-002",
+      "customer": {
+        "name": "TechStart Inc.",
+        "email": "accounts@techstart.io",
+        "address": "456 Innovation Blvd, Tech City, TC 67890"
+      },
+      "amount": 4200.50,
+      "dueDate": "2025-01-20",
+      "status": "paid",
+      "createdAt": "2024-12-10T14:30:00Z",
+      "updatedAt": "2025-01-05T09:15:00Z"
+    },
+    {
+      "id": "INV-003",
+      "invoiceNumber": "INV-003",
+      "customer": {
+        "name": "Global Solutions Ltd",
+        "email": "finance@globalsolutions.com",
+        "address": "789 Enterprise Way, Metro, MT 13579"
+      },
+      "amount": 1850.75,
+      "dueDate": "2024-12-30",
+      "status": "overdue",
+      "createdAt": "2024-11-30T16:45:00Z",
+      "updatedAt": "2024-11-30T16:45:00Z"
+    },
+    {
+      "id": "INV-004",
+      "invoiceNumber": "INV-004",
+      "customer": {
+        "name": "Digital Dynamics",
+        "email": "billing@digitaldynamics.net",
+        "address": "321 Future St, Innovation Park, IP 24680"
+      },
+      "amount": 3100.00,
+      "dueDate": "2025-02-01",
+      "status": "draft",
+      "createdAt": "2025-01-01T12:00:00Z",
+      "updatedAt": "2025-01-01T12:00:00Z"
+    },
+    {
+      "id": "INV-005",
+      "invoiceNumber": "INV-005",
+      "customer": {
+        "name": "NextGen Systems",
+        "email": "payments@nextgensys.com",
+        "address": "654 Progress Dr, Future City, FC 97531"
+      },
+      "amount": 5750.25,
+      "dueDate": "2025-01-25",
+      "status": "pending",
+      "createdAt": "2024-12-25T08:30:00Z",
+      "updatedAt": "2024-12-25T08:30:00Z"
+    },
+    {
+      "id": "INV-006",
+      "invoiceNumber": "INV-006",
+      "customer": {
+        "name": "SmartBiz Corp",
+        "email": "ar@smartbiz.biz",
+        "address": "987 Commerce Blvd, Business District, BD 86420"
+      },
+      "amount": 1299.99,
+      "dueDate": "2025-01-10",
+      "status": "paid",
+      "createdAt": "2024-12-05T11:15:00Z",
+      "updatedAt": "2025-01-08T14:22:00Z"
+    },
+    {
+      "id": "INV-007",
+      "invoiceNumber": "INV-007",
+      "customer": {
+        "name": "CloudFirst Technologies",
+        "email": "billing@cloudfirst.tech",
+        "address": "147 Cloud Ave, Sky City, SC 75319"
+      },
+      "amount": 6800.00,
+      "dueDate": "2024-12-20",
+      "status": "overdue",
+      "createdAt": "2024-11-20T13:45:00Z",
+      "updatedAt": "2024-11-20T13:45:00Z"
+    },
+    {
+      "id": "INV-008",
+      "invoiceNumber": "INV-008",
+      "customer": {
+        "name": "InnovateLab",
+        "email": "finance@innovatelab.org",
+        "address": "258 Research Rd, Lab City, LC 95184"
+      },
+      "amount": 2975.50,
+      "dueDate": "2025-02-05",
+      "status": "draft",
+      "createdAt": "2025-01-02T15:20:00Z",
+      "updatedAt": "2025-01-02T15:20:00Z"
+    },
+    {
+      "id": "INV-009",
+      "invoiceNumber": "INV-009",
+      "customer": {
+        "name": "DataDriven Inc",
+        "email": "accounts@datadriven.co",
+        "address": "369 Analytics St, Data City, DC 62817"
+      },
+      "amount": 4500.00,
+      "dueDate": "2025-01-30",
+      "status": "pending",
+      "createdAt": "2024-12-30T10:10:00Z",
+      "updatedAt": "2024-12-30T10:10:00Z"
+    },
+    {
+      "id": "INV-010",
+      "invoiceNumber": "INV-010",
+      "customer": {
+        "name": "AutoMate Solutions",
+        "email": "billing@automate.solutions",
+        "address": "741 Automation Ave, Robo City, RC 48629"
+      },
+      "amount": 8200.75,
+      "dueDate": "2025-01-18",
+      "status": "pending",
+      "createdAt": "2024-12-18T09:45:00Z",
+      "updatedAt": "2024-12-18T09:45:00Z"
+    }
+  ],
+  "customers": [
+    {
+      "id": "CUST-001",
+      "name": "Acme Corporation",
+      "email": "billing@acme.com",
+      "phone": "+1-555-0101",
+      "address": "123 Business Ave, City, State 12345",
+      "status": "active",
+      "creditLimit": 10000.00,
+      "currentBalance": 2500.00
+    },
+    {
+      "id": "CUST-002",
+      "name": "TechStart Inc.",
+      "email": "accounts@techstart.io",
+      "phone": "+1-555-0102",
+      "address": "456 Innovation Blvd, Tech City, TC 67890",
+      "status": "active",
+      "creditLimit": 15000.00,
+      "currentBalance": 0.00
+    },
+    {
+      "id": "CUST-003",
+      "name": "Global Solutions Ltd",
+      "email": "finance@globalsolutions.com",
+      "phone": "+1-555-0103",
+      "address": "789 Enterprise Way, Metro, MT 13579",
+      "status": "active",
+      "creditLimit": 20000.00,
+      "currentBalance": 1850.75
+    }
+  ],
+  "payments": [
+    {
+      "id": "PAY-001",
+      "invoiceId": "INV-002",
+      "amount": 4200.50,
+      "paymentDate": "2025-01-05",
+      "paymentMethod": "bank_transfer",
+      "reference": "TXN-20250105-001",
+      "status": "completed"
+    },
+    {
+      "id": "PAY-002",
+      "invoiceId": "INV-006",
+      "amount": 1299.99,
+      "paymentDate": "2025-01-08",
+      "paymentMethod": "credit_card",
+      "reference": "CC-20250108-002",
+      "status": "completed"
+    }
+  ]
+}

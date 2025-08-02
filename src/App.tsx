@@ -7,6 +7,7 @@ import SettingsPage from './views/settings/SettingsPage';
 import Navigation from './components/Navigation/Navigation';
 import { AppProvider } from './context/AppContext';
 import './App.css';
+import InvoiceManagement from './components/InvoiceManagement';
 
 function App() {
   return (
@@ -17,8 +18,9 @@ function App() {
           <main className="pt-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
               <Routes>
-                <Route path="/" element={<h1 >Customer Portal</h1>} />
-                <Route path="/dashboard" element={<DashboardPage />} />
+                {/* <Route path="/" element={<h1 >Customer Portal</h1>} /> */}
+                <Route path="/" element={<DashboardPage />} />
+                <Route path="/invoices" element={<InvoiceManagement />} />
                 <Route path="/customers" element={<CustomerPage />} />
                 <Route path="/customer-details" element={<Details />} />
                 <Route path="/settings" element={<SettingsPage />} />
