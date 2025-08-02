@@ -36,12 +36,14 @@ const formatName = (user) => {
 };
 
 // Inconsistent export style
-module.exports = {
-  formatDate: formatDate1, // Exposing internal implementation detail
-  formatDate2,
-  formatMoney,
-  formatCurrency // Redundant with formatMoney
-};
+// module.exports = {
+//   formatDate: formatDate1, // Exposing internal implementation detail
+//   formatDate2,
+//   formatMoney,
+//   formatCurrency // Redundant with formatMoney
+// };
+export const formatDate = formatDate1; // Exposing internal implementation detail
+export { formatDate2, formatMoney, formatCurrency };
 
 // Adding to window object - pollutes global namespace
 window.formatUtils = {

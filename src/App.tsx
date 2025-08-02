@@ -1,7 +1,7 @@
 // Main application file - last updated by dev3
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { CustomerPage } from './components/legacy/customer/CustomerPage';
-import Details from './views/customer/Details';
+import Details from './views/CustomerDetails/CustomerDetailsPage';
 import DashboardPage from './views/dashboard/DashboardPage';
 import SettingsPage from './views/settings/SettingsPage';
 import { AppProvider } from './context/AppContext';
