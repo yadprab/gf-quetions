@@ -1,45 +1,57 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { AppContext } from '../../context/AppContext';
-import { formatCurrency } from '../../utils/formatting';
-import { useFetchInvoices } from './hooks/useFetchInvoices';
+import { useFetchData } from './hooks/useFetchData';
+import RenderCell from './components/RenderCell';
 
-export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) => {
+
+export const DataTableContainer = ({ 
+  endpoint, 
+  columns, 
+  initialPageSize = 10,
+  entityName = 'item',
+  dataProcessor,
+  collaboratorSimulation = false,
+  searchableFields = [],
+  defaultSort = { key: 'id', direction: 'asc' },
+  bulkActions = [],
+  customFilters = [],
+  updateHandler = null,
+  className = '',
+  style = {}
+}) => {
   // Context and state
   const { user } = useContext(AppContext);
   const {
-    invoices,
+    data,
     loading,
     error,
     collaborators,
     lastUpdated,
-    fetchInvoices,
-    updateInvoiceStatus,
-    deleteInvoices
-  } = useFetchInvoices(endpoint);
+    fetchData,
+    updateItem,
+    deleteItems
+  } = useFetchData(endpoint, {
+    dataProcessor,
+    collaboratorSimulation,
+    entityName,
+    updateHandler
+  });
   
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
-  const [sortConfig, setSortConfig] = useState({ key: 'dueDate', direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState(defaultSort);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useState({
-    status: '',
-    amountRange: { min: 0, max: 100000 },
-    daysOverdue: 0
-  });
-  const [selectedInvoices, setSelectedInvoices] = useState([]);
+  const [filters, setFilters] = useState({});
+  const [selectedItems, setSelectedItems] = useState([]);
 
-
-  // Get status style
-  const getInvoiceStatusStyle = (status) => {
-    const styles = {
-      paid: { backgroundColor: '#e6fffa', color: '#234e52' },
-      pending: { backgroundColor: '#feebc8', color: '#7b341e' },
-      overdue: { backgroundColor: '#fed7d7', color: '#822727' },
-      draft: { backgroundColor: '#ebf8ff', color: '#2c5282' }
-    };
-    return styles[status] || { backgroundColor: '#f7fafc', color: '#4a5568' };
-  };
-
+  // Initialize filters from customFilters
+  useEffect(() => {
+    const initialFilters = {};
+    customFilters.forEach(filter => {
+      initialFilters[filter.key] = filter.defaultValue || '';
+    });
+    setFilters(initialFilters);
+  }, [customFilters]);
 
   // Handle sorting
   const handleSort = (key) => {
@@ -57,45 +69,49 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
     });
   };
 
-  // Handle status update
-  const handleStatusUpdate = async (invoiceId, newStatus) => {
-    await updateInvoiceStatus(invoiceId, newStatus);
+  // Handle field update (for inline editing)
+  const handleFieldUpdate = async (itemId, field, value) => {
+    await updateItem(itemId, field, value);
   };
 
-  // Filter and sort invoices
-  const filteredAndSortedInvoices = useMemo(() => {
-    let result = [...invoices];
+  // Get nested value from object using dot notation
+  const getNestedValue = (obj, path) => {
+    return path.split('.').reduce((current, key) => current?.[key], obj);
+  };
+
+  // Filter and sort data
+  const filteredAndSortedData = useMemo(() => {
+    let result = [...data];
 
     // Apply search
-    if (searchTerm) {
+    if (searchTerm && searchableFields.length > 0) {
       const term = searchTerm.toLowerCase();
-      result = result.filter(invoice => 
-        invoice.customer?.name?.toLowerCase().includes(term) ||
-        invoice.id.toLowerCase().includes(term) ||
-        invoice.amount.toString().includes(term)
+      result = result.filter(item => 
+        searchableFields.some(field => {
+          const value = getNestedValue(item, field);
+          return value?.toString().toLowerCase().includes(term);
+        })
       );
     }
 
-    // Apply filters
-    if (filters.status) {
-      result = result.filter(invoice => invoice.status === filters.status);
-    }
-    
-    if (filters.amountRange) {
-      result = result.filter(
-        invoice => 
-          invoice.amount >= filters.amountRange.min && 
-          invoice.amount <= filters.amountRange.max
-      );
-    }
+    // Apply custom filters
+    customFilters.forEach(filter => {
+      const filterValue = filters[filter.key];
+      if (filterValue && filterValue !== filter.defaultValue) {
+        result = result.filter(item => filter.filterFunction(item, filterValue));
+      }
+    });
 
     // Apply sorting
     if (sortConfig.key) {
       result.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        const aValue = getNestedValue(a, sortConfig.key);
+        const bValue = getNestedValue(b, sortConfig.key);
+        
+        if (aValue < bValue) {
           return sortConfig.direction === 'asc' ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (aValue > bValue) {
           return sortConfig.direction === 'asc' ? 1 : -1;
         }
         return 0;
@@ -103,61 +119,58 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
     }
 
     return result;
-  }, [invoices, searchTerm, filters, sortConfig]);
+  }, [data, searchTerm, searchableFields, filters, customFilters, sortConfig]);
 
-  const paginatedInvoices = useMemo(() => {
+  const paginatedData = useMemo(() => {
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    return filteredAndSortedInvoices.slice(startIndex, endIndex);
-  }, [filteredAndSortedInvoices, page, pageSize]);
+    return filteredAndSortedData.slice(startIndex, endIndex);
+  }, [filteredAndSortedData, page, pageSize]);
 
-  const totalPages = Math.ceil(filteredAndSortedInvoices.length / pageSize);
+  const totalPages = Math.ceil(filteredAndSortedData.length / pageSize);
 
   // Handle row selection
-  const toggleInvoiceSelection = (invoiceId) => {
-    setSelectedInvoices(prev => 
-      prev.includes(invoiceId)
-        ? prev.filter(id => id !== invoiceId)
-        : [...prev, invoiceId]
+  const toggleItemSelection = (itemId) => {
+    setSelectedItems(prev => 
+      prev.includes(itemId)
+        ? prev.filter(id => id !== itemId)
+        : [...prev, itemId]
     );
   };
 
   // Handle bulk actions
   const handleBulkAction = async (action) => {
-    if (selectedInvoices.length === 0) return;
+    if (selectedItems.length === 0) return;
 
     try {
-      if (action === 'delete') {
-        if (!window.confirm(`Are you sure you want to delete ${selectedInvoices.length} selected invoices?`)) {
+      if (action.key === 'delete') {
+        if (!window.confirm(`Are you sure you want to delete ${selectedItems.length} selected ${entityName}s?`)) {
           return;
         }
         
-        await deleteInvoices(selectedInvoices);
-        setSelectedInvoices([]);
-      } else if (action === 'export') {
-        // Implement export functionality
-        console.log('Exporting:', selectedInvoices);
-      } else {
-        // Handle other bulk actions
-        console.log('Bulk action:', action, 'on', selectedInvoices);
+        await deleteItems(selectedItems);
+        setSelectedItems([]);
+      } else if (action.handler) {
+        await action.handler(selectedItems, data.filter(item => selectedItems.includes(item.id)));
+        setSelectedItems([]);
       }
     } catch (err) {
       console.error('Error performing bulk action:', err);
-      alert('Failed to perform bulk action. Please try again.');
+      alert(`Failed to perform bulk action. Please try again.`);
     }
   };
 
   // Fetch data on mount and when dependencies change
   useEffect(() => {
-    fetchInvoices();
-  }, [fetchInvoices]);
+    fetchData();
+  }, [fetchData]);
   
   useEffect(() => {
     setPage(1);
   }, [searchTerm, filters, sortConfig]);
 
   // Render loading state
-  if (loading && invoices.length === 0) {
+  if (loading && data.length === 0) {
     return (
       <div style={{ 
         display: 'flex', 
@@ -165,7 +178,7 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
         alignItems: 'center', 
         height: '300px' 
       }}>
-        <div>Loading invoices...</div>
+        <div>Loading {entityName}s...</div>
       </div>
     );
   }
@@ -182,7 +195,7 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
       }}>
         {error}
         <button 
-          onClick={fetchInvoices}
+          onClick={fetchData}
           style={{
             marginLeft: '10px',
             padding: '5px 10px',
@@ -201,48 +214,58 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
       
   // Render the main component
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px', ...style }} className={className}>
       {/* Search and Filter Bar */}
       <div style={{ marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center' }}>
-        <div style={{ flex: 1, maxWidth: '400px' }}>
-          <input
-            type="text"
-            placeholder="Search invoices by customer, invoice #, or amount..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: '10px 16px',
-              width: '100%',
-              borderRadius: '6px',
-              border: '1px solid #e2e8f0',
-              fontSize: '14px'
-            }}
-          />
-        </div>
+        {searchableFields.length > 0 && (
+          <div style={{ flex: 1, maxWidth: '400px' }}>
+            <input
+              type="text"
+              placeholder={`Search ${entityName}s...`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                padding: '10px 16px',
+                width: '100%',
+                borderRadius: '6px',
+                border: '1px solid #e2e8f0',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+        )}
         
         <div style={{ display: 'flex', gap: '10px' }}>
-          <select
-            value={filters.status || ''}
-            onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value || undefined }))}
-            style={{
-              padding: '8px 12px',
-              borderRadius: '6px',
-              border: '1px solid #e2e8f0',
-              backgroundColor: 'white',
-              fontSize: '14px',
-              cursor: 'pointer',
-              color: 'black'
-            }}
-          >
-            <option value="">All Statuses</option>
-            <option value="paid">Paid</option>
-            <option value="pending">Pending</option>
-            <option value="overdue">Overdue</option>
-            <option value="draft">Draft</option>
-          </select>
+          {/* Custom Filters */}
+          {customFilters.map(filter => (
+            <div key={filter.key}>
+              {filter.type === 'select' && (
+                <select
+                  value={filters[filter.key] || ''}
+                  onChange={(e) => setFilters(prev => ({ ...prev, [filter.key]: e.target.value || filter.defaultValue }))}
+                  style={{
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    backgroundColor: 'white',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    color: 'black'
+                  }}
+                >
+                  <option value={filter.defaultValue}>{filter.placeholder}</option>
+                  {filter.options.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          ))}
           
           <button
-            onClick={fetchInvoices}
+            onClick={fetchData}
             style={{
               padding: '8px 16px',
               backgroundColor: '#f7fafc',
@@ -281,164 +304,94 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
                 textAlign: 'left',
                 color: 'black'
               }}>
-                <th style={{ padding: '12px 16px', width: '40px' }}>
-                  <input 
-                    type="checkbox"
-                    checked={selectedInvoices.length > 0 && selectedInvoices.length === paginatedInvoices.length}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectedInvoices(paginatedInvoices.map(inv => inv.id));
-                      } else {
-                        setSelectedInvoices([]);
-                      }
-                    }}
-                  />
-                </th>
-                <th style={{ padding: '12px 16px', cursor: 'pointer' }} onClick={() => handleSort('id')}>
-                  Invoice #
-                </th>
-                <th style={{ padding: '12px 16px', cursor: 'pointer' }} onClick={() => handleSort('customer.name')}>
-                  Customer
-                </th>
-                <th style={{ padding: '12px 16px', textAlign: 'right', cursor: 'pointer' }} onClick={() => handleSort('amount')}>
-                  Amount
-                </th>
-                <th style={{ padding: '12px 16px', cursor: 'pointer' }} onClick={() => handleSort('dueDate')}>
-                  Due Date
-                </th>
-                <th style={{ padding: '12px 16px', cursor: 'pointer' }} onClick={() => handleSort('status')}>
-                  Status
-                </th>
-                <th style={{ padding: '12px 16px' }}>Actions</th>
+                {bulkActions.length > 0 && (
+                  <th style={{ padding: '12px 16px', width: '40px' }}>
+                    <input 
+                      type="checkbox"
+                      checked={selectedItems.length > 0 && selectedItems.length === paginatedData.length}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedItems(paginatedData.map(item => item.id));
+                        } else {
+                          setSelectedItems([]);
+                        }
+                      }}
+                    />
+                  </th>
+                )}
+                {columns.map((column) => (
+                  <th 
+                    key={column.key}
+                    style={{ 
+                      padding: '12px 16px', 
+                      cursor: column.sortable ? 'pointer' : 'default',
+                      textAlign: column.align || 'left',
+                      width: column.width || 'auto'
+                    }} 
+                    onClick={column.sortable ? () => handleSort(column.key) : undefined}
+                  >
+                    {column.header}
+                    {column.sortable && sortConfig.key === column.key && (
+                      <span style={{ marginLeft: '4px' }}>
+                        {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                      </span>
+                    )}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {paginatedInvoices.length === 0 ? (
+              {paginatedData.length === 0 ? (
                 <tr>
-                  <td colSpan="7" style={{ textAlign: 'center', padding: '32px' }}>
-                    No invoices found matching your criteria
+                  <td colSpan={columns.length + (bulkActions.length > 0 ? 1 : 0)} style={{ textAlign: 'center', padding: '32px' }}>
+                    No {entityName}s found matching your criteria
                   </td>
                 </tr>
               ) : (
-                paginatedInvoices.map((invoice) => (
+                paginatedData.map((item) => (
                   <tr 
-                    key={invoice.id}
+                    key={item.id}
                     style={{
                       borderBottom: '1px solid #edf2f7',
                       color: 'black',
-                      backgroundColor: selectedInvoices.includes(invoice.id) ? '#f0f9ff' : 'white',
-                      '&:hover': {
-                        backgroundColor: '#f8fafc'
-                      }
+                      backgroundColor: selectedItems.includes(item.id) ? '#f0f9ff' : 'white'
                     }}
                   >
-                    <td style={{ padding: '16px', textAlign: 'center' }}>
-                      <input 
-                        type="checkbox"
-                        checked={selectedInvoices.includes(invoice.id)}
-                        onChange={() => toggleInvoiceSelection(invoice.id)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    </td>
-                    <td style={{ padding: '16px', fontWeight: '500' }}>{invoice.id}</td>
-                    <td style={{ padding: '16px' }}>{invoice.customer?.name || 'N/A'}</td>
-                    <td style={{ padding: '16px', textAlign: 'right', fontWeight: '500' }}>
-                      {formatCurrency(invoice.amount)}
-                    </td>
-                    <td style={{ padding: '16px' }}>
-                      <div>{new Date(invoice.dueDate).toLocaleDateString()}</div>
-                      {invoice.daysOverdue > 0 && (
-                        <div style={{ fontSize: '12px', color: '#e53e3e' }}>
-                          {invoice.daysOverdue} days overdue
-                        </div>
-                      )}
-                    </td>
-                    <td style={{ padding: '16px' }}>
-                      <select
-                        value={invoice.status}
-                        onChange={(e) => handleStatusUpdate(invoice.id, e.target.value)}
-                        style={{
-                          padding: '4px 8px',
-                          borderRadius: '4px',
-                          border: '1px solid #e2e8f0',
-                          backgroundColor: getInvoiceStatusStyle(invoice.status).backgroundColor,
-                          color: getInvoiceStatusStyle(invoice.status).color,
-                          cursor: 'pointer',
-                          minWidth: '100px',
-                          '&:hover': {
-                            opacity: 0.9
-                          }
+                    {bulkActions.length > 0 && (
+                      <td style={{ padding: '16px', textAlign: 'center' }}>
+                        <input 
+                          type="checkbox"
+                          checked={selectedItems.includes(item.id)}
+                          onChange={() => toggleItemSelection(item.id)}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </td>
+                    )}
+                    {columns.map((column) => (
+                      <td 
+                        key={column.key}
+                        style={{ 
+                          padding: '16px', 
+                          textAlign: column.align || 'left',
+                          fontWeight: column.bold ? '500' : 'normal'
                         }}
                       >
-                        <option value="draft">Draft</option>
-                        <option value="pending">Pending</option>
-                        <option value="paid">Paid</option>
-                        <option value="overdue">Overdue</option>
-                      </select>
-                    </td>
-                    <td style={{ padding: '16px' }}>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Handle view action
-                            console.log('View invoice:', invoice.id);
-                          }}
-                          style={{
-                            padding: '4px 8px',
-                            backgroundColor: '#ebf8ff',
-                            color: '#3182ce',
-                            border: '1px solid #bee3f8',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            '&:hover': {
-                              backgroundColor: '#bee3f8'
-                            }
-                          }}
-                        >
-                          View
-                        </button>
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Handle edit action
-                            console.log('Edit invoice:', invoice.id);
-                          }}
-                          style={{
-                            padding: '4px 8px',
-                            backgroundColor: '#fefcbf',
-                            color: '#975a16',
-                            border: '1px solid #faf089',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            '&:hover': {
-                              backgroundColor: '#faf089'
-                            }
-                          }}
-                        >
-                          Edit
-                        </button>
-                      </div>
-                      {collaborators[invoice.id] && (
-                        <div style={{ 
-                          fontSize: '12px',
-                          color: '#718096',
-                          marginTop: '4px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px'
-                        }}>
-                          <span style={{
-                            display: 'inline-block',
-                            width: '8px',
-                            height: '8px',
-                            borderRadius: '50%',
-                            backgroundColor: '#48bb78'
-                          }}></span>
-                          {collaborators[invoice.id].name} is {collaborators[invoice.id].action} this invoice
-                        </div>
-                      )}
-                    </td>
+                        {column.cellType ? (
+                          <RenderCell
+                            type={column.cellType}
+                            item={item}
+                            field={column.key}
+                            handleFieldUpdate={handleFieldUpdate}
+                            options={column.selectOptions || []}
+                            style={{ fontWeight: column.bold ? '500' : 'normal' }}
+                          />
+                        ) : column.render ? (
+                          column.render(item, handleFieldUpdate, collaborators[item.id])
+                        ) : (
+                          getNestedValue(item, column.key)
+                        )}
+                      </td>
+                    ))}
                   </tr>
                 ))
               )}
@@ -456,10 +409,10 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
           backgroundColor: '#f8fafc'
         }}>
           <div style={{ fontSize: '14px', color: '#4a5568' }}>
-            {selectedInvoices.length > 0 ? (
-              `${selectedInvoices.length} selected`
+            {selectedItems.length > 0 ? (
+              `${selectedItems.length} selected`
             ) : (
-              `Showing ${(page - 1) * pageSize + 1}-${Math.min(page * pageSize, filteredAndSortedInvoices.length)} of ${filteredAndSortedInvoices.length} invoices`
+              `Showing ${(page - 1) * pageSize + 1}-${Math.min(page * pageSize, filteredAndSortedData.length)} of ${filteredAndSortedData.length} ${entityName}s`
             )}
             {lastUpdated && (
               <span style={{ marginLeft: '16px', fontSize: '12px', color: '#a0aec0' }}>
@@ -537,50 +490,36 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
               </button>
             </div>
 
-            {selectedInvoices.length > 0 && (
+            {selectedItems.length > 0 && bulkActions.length > 0 && (
               <div style={{ display: 'flex', gap: '8px' }}>
-                <button
-                  onClick={() => handleBulkAction('export')}
-                  style={{
-                    padding: '6px 12px',
-                    backgroundColor: '#ebf8ff',
-                    color: '#2b6cb0',
-                    border: '1px solid #bee3f8',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    fontSize: '14px'
-                  }}
-                >
-                  <span>📤</span> Export
-                </button>
-                <button
-                  onClick={() => handleBulkAction('delete')}
-                  style={{
-                    padding: '6px 12px',
-                    backgroundColor: '#fff5f5',
-                    color: '#e53e3e',
-                    border: '1px solid #fed7d7',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    fontSize: '14px'
-                  }}
-                >
-                  <span>🗑️</span> Delete
-                </button>
+                {bulkActions.map((action) => (
+                  <button
+                    key={action.key}
+                    onClick={() => handleBulkAction(action)}
+                    style={{
+                      padding: '6px 12px',
+                      backgroundColor: action.style?.backgroundColor || '#ebf8ff',
+                      color: action.style?.color || '#2b6cb0',
+                      border: `1px solid ${action.style?.borderColor || '#bee3f8'}`,
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      fontSize: '14px'
+                    }}
+                  >
+                    {action.icon && <span>{action.icon}</span>} {action.label}
+                  </button>
+                ))}
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Action Bar for selected invoices */}
-      {selectedInvoices.length > 0 && (
+      {/* Floating Action Bar for selected items */}
+      {selectedItems.length > 0 && bulkActions.length > 0 && (
         <div style={{
           position: 'fixed',
           bottom: '20px',
@@ -596,67 +535,31 @@ export const DataTableContainer = ({ endpoint, columns, initialPageSize = 10 }) 
           zIndex: 1000
         }}>
           <div style={{ fontWeight: '500' }}>
-            {selectedInvoices.length} invoice{selectedInvoices.length > 1 ? 's' : ''} selected
+            {selectedItems.length} {entityName}{selectedItems.length > 1 ? 's' : ''} selected
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <select
-              onChange={(e) => {
-                if (e.target.value) {
-                  handleBulkAction(`status:${e.target.value}`);
-                  e.target.value = '';
-                }
-              }}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '4px',
-                border: '1px solid #e2e8f0',
-                backgroundColor: 'white',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
-            >
-              <option value="">Update Status</option>
-              <option value="paid">Mark as Paid</option>
-              <option value="pending">Mark as Pending</option>
-              <option value="overdue">Mark as Overdue</option>
-              <option value="draft">Mark as Draft</option>
-            </select>
+            {bulkActions.map((action) => (
+              <button
+                key={action.key}
+                onClick={() => handleBulkAction(action)}
+                style={{
+                  padding: '6px 12px',
+                  backgroundColor: action.style?.backgroundColor || '#ebf8ff',
+                  color: action.style?.color || '#2b6cb0',
+                  border: `1px solid ${action.style?.borderColor || '#bee3f8'}`,
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  fontSize: '14px'
+                }}
+              >
+                {action.icon && <span>{action.icon}</span>} {action.label}
+              </button>
+            ))}
             <button
-              onClick={() => handleBulkAction('export')}
-              style={{
-                padding: '6px 12px',
-                backgroundColor: '#ebf8ff',
-                color: '#2b6cb0',
-                border: '1px solid #bee3f8',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                fontSize: '14px'
-              }}
-            >
-              <span>📤</span> Export
-            </button>
-            <button
-              onClick={() => handleBulkAction('delete')}
-              style={{
-                padding: '6px 12px',
-                backgroundColor: '#fff5f5',
-                color: '#e53e3e',
-                border: '1px solid #fed7d7',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                fontSize: '14px'
-              }}
-            >
-              <span>🗑️</span> Delete
-            </button>
-            <button
-              onClick={() => setSelectedInvoices([])}
+              onClick={() => setSelectedItems([])}
               style={{
                 padding: '6px 12px',
                 backgroundColor: '#f7fafc',

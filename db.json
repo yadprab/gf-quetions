@@ -1,48 +1,6 @@
 {
   "invoices": [
     {
-      "id": "INV-001",
-      "invoiceNumber": "INV-001",
-      "customer": {
-        "name": "Acme Corporation",
-        "email": "billing@acme.com",
-        "address": "123 Business Ave, City, State 12345"
-      },
-      "amount": 2500.00,
-      "dueDate": "2025-01-15",
-      "status": "pending",
-      "createdAt": "2024-12-15T10:00:00Z",
-      "updatedAt": "2024-12-15T10:00:00Z"
-    },
-    {
-      "id": "INV-002",
-      "invoiceNumber": "INV-002",
-      "customer": {
-        "name": "TechStart Inc.",
-        "email": "accounts@techstart.io",
-        "address": "456 Innovation Blvd, Tech City, TC 67890"
-      },
-      "amount": 4200.50,
-      "dueDate": "2025-01-20",
-      "status": "paid",
-      "createdAt": "2024-12-10T14:30:00Z",
-      "updatedAt": "2025-01-05T09:15:00Z"
-    },
-    {
-      "id": "INV-003",
-      "invoiceNumber": "INV-003",
-      "customer": {
-        "name": "Global Solutions Ltd",
-        "email": "finance@globalsolutions.com",
-        "address": "789 Enterprise Way, Metro, MT 13579"
-      },
-      "amount": 1850.75,
-      "dueDate": "2024-12-30",
-      "status": "overdue",
-      "createdAt": "2024-11-30T16:45:00Z",
-      "updatedAt": "2024-11-30T16:45:00Z"
-    },
-    {
       "id": "INV-004",
       "invoiceNumber": "INV-004",
       "customer": {
@@ -50,9 +8,9 @@
         "email": "billing@digitaldynamics.net",
         "address": "321 Future St, Innovation Park, IP 24680"
       },
-      "amount": 3100.00,
+      "amount": 3100,
       "dueDate": "2025-02-01",
-      "status": "draft",
+      "status": "pending",
       "createdAt": "2025-01-01T12:00:00Z",
       "updatedAt": "2025-01-01T12:00:00Z"
     },
@@ -71,34 +29,6 @@
       "updatedAt": "2024-12-25T08:30:00Z"
     },
     {
-      "id": "INV-006",
-      "invoiceNumber": "INV-006",
-      "customer": {
-        "name": "SmartBiz Corp",
-        "email": "ar@smartbiz.biz",
-        "address": "987 Commerce Blvd, Business District, BD 86420"
-      },
-      "amount": 1299.99,
-      "dueDate": "2025-01-10",
-      "status": "paid",
-      "createdAt": "2024-12-05T11:15:00Z",
-      "updatedAt": "2025-01-08T14:22:00Z"
-    },
-    {
-      "id": "INV-007",
-      "invoiceNumber": "INV-007",
-      "customer": {
-        "name": "CloudFirst Technologies",
-        "email": "billing@cloudfirst.tech",
-        "address": "147 Cloud Ave, Sky City, SC 75319"
-      },
-      "amount": 6800.00,
-      "dueDate": "2024-12-20",
-      "status": "overdue",
-      "createdAt": "2024-11-20T13:45:00Z",
-      "updatedAt": "2024-11-20T13:45:00Z"
-    },
-    {
       "id": "INV-008",
       "invoiceNumber": "INV-008",
       "customer": {
@@ -106,7 +36,7 @@
         "email": "finance@innovatelab.org",
         "address": "258 Research Rd, Lab City, LC 95184"
       },
-      "amount": 2975.50,
+      "amount": 2975.5,
       "dueDate": "2025-02-05",
       "status": "draft",
       "createdAt": "2025-01-02T15:20:00Z",
@@ -120,9 +50,9 @@
         "email": "accounts@datadriven.co",
         "address": "369 Analytics St, Data City, DC 62817"
       },
-      "amount": 4500.00,
+      "amount": 4500,
       "dueDate": "2025-01-30",
-      "status": "pending",
+      "status": "draft",
       "createdAt": "2024-12-30T10:10:00Z",
       "updatedAt": "2024-12-30T10:10:00Z"
     },
@@ -130,15 +60,281 @@
       "id": "INV-010",
       "invoiceNumber": "INV-010",
       "customer": {
-        "name": "AutoMate Solutions",
-        "email": "billing@automate.solutions",
-        "address": "741 Automation Ave, Robo City, RC 48629"
+        "name": "CloudTech Solutions",
+        "email": "billing@cloudtech.io",
+        "address": "100 Cloud St, Sky City, SC 10001"
       },
-      "amount": 8200.75,
-      "dueDate": "2025-01-18",
+      "amount": 6750,
+      "dueDate": "2025-02-15",
+      "status": "paid",
+      "createdAt": "2025-01-15T09:00:00Z",
+      "updatedAt": "2025-01-16T14:30:00Z"
+    },
+    {
+      "id": "INV-011",
+      "invoiceNumber": "INV-011",
+      "customer": {
+        "name": "MegaCorp Industries",
+        "email": "ap@megacorp.com",
+        "address": "500 Corporate Blvd, Business District, BD 20002"
+      },
+      "amount": 12500.75,
+      "dueDate": "2025-02-28",
+      "status": "overdue",
+      "createdAt": "2024-12-01T11:15:00Z",
+      "updatedAt": "2024-12-01T11:15:00Z"
+    },
+    {
+      "id": "INV-012",
+      "invoiceNumber": "INV-012",
+      "customer": {
+        "name": "StartupXYZ",
+        "email": "finance@startupxyz.com",
+        "address": "25 Innovation Ave, Startup Valley, SV 30003"
+      },
+      "amount": 1850.5,
+      "dueDate": "2025-02-10",
+      "status": "draft",
+      "createdAt": "2025-01-20T16:45:00Z",
+      "updatedAt": "2025-01-20T16:45:00Z"
+    },
+    {
+      "id": "INV-013",
+      "invoiceNumber": "INV-013",
+      "customer": {
+        "name": "Enterprise Global",
+        "email": "accounting@enterpriseglobal.net",
+        "address": "750 Global Plaza, Enterprise City, EC 40004"
+      },
+      "amount": 8900.25,
+      "dueDate": "2025-03-01",
       "status": "pending",
-      "createdAt": "2024-12-18T09:45:00Z",
-      "updatedAt": "2024-12-18T09:45:00Z"
+      "createdAt": "2025-01-25T08:20:00Z",
+      "updatedAt": "2025-01-25T08:20:00Z"
+    },
+    {
+      "id": "INV-014",
+      "invoiceNumber": "INV-014",
+      "customer": {
+        "name": "TechFlow Dynamics",
+        "email": "payments@techflow.co",
+        "address": "200 Flow Street, Dynamic City, DC 50005"
+      },
+      "amount": 3400,
+      "dueDate": "2025-02-20",
+      "status": "paid",
+      "createdAt": "2024-12-15T13:30:00Z",
+      "updatedAt": "2025-01-18T10:00:00Z"
+    },
+    {
+      "id": "INV-015",
+      "invoiceNumber": "INV-015",
+      "customer": {
+        "name": "Innovation Labs",
+        "email": "billing@innovationlabs.org",
+        "address": "300 Research Park, Lab Town, LT 60006"
+      },
+      "amount": 5250.8,
+      "dueDate": "2025-02-12",
+      "status": "pending",
+      "createdAt": "2025-01-12T12:00:00Z",
+      "updatedAt": "2025-01-12T12:00:00Z"
+    },
+    {
+      "id": "INV-016",
+      "invoiceNumber": "INV-016",
+      "customer": {
+        "name": "Digital Frontier",
+        "email": "accounts@digitalfrontier.com",
+        "address": "400 Frontier Rd, Digital Valley, DV 70007"
+      },
+      "amount": 7800,
+      "dueDate": "2025-03-05",
+      "status": "draft",
+      "createdAt": "2025-01-28T15:15:00Z",
+      "updatedAt": "2025-01-28T15:15:00Z"
+    },
+    {
+      "id": "INV-017",
+      "invoiceNumber": "INV-017",
+      "customer": {
+        "name": "Quantum Systems",
+        "email": "finance@quantumsys.io",
+        "address": "600 Quantum Dr, Science City, SC 80008"
+      },
+      "amount": 9999.99,
+      "dueDate": "2025-02-08",
+      "status": "overdue",
+      "createdAt": "2024-11-20T14:45:00Z",
+      "updatedAt": "2024-11-20T14:45:00Z"
+    },
+    {
+      "id": "INV-018",
+      "invoiceNumber": "INV-018",
+      "customer": {
+        "name": "Alpha Technologies",
+        "email": "billing@alphatech.net",
+        "address": "800 Alpha St, Tech Hub, TH 90009"
+      },
+      "amount": 4275.3,
+      "dueDate": "2025-02-25",
+      "status": "pending",
+      "createdAt": "2025-01-10T10:30:00Z",
+      "updatedAt": "2025-01-10T10:30:00Z"
+    },
+    {
+      "id": "INV-019",
+      "invoiceNumber": "INV-019",
+      "customer": {
+        "name": "Beta Innovations",
+        "email": "ap@betainnovations.com",
+        "address": "900 Beta Blvd, Innovation District, ID 11010"
+      },
+      "amount": 6150.45,
+      "dueDate": "2025-03-10",
+      "status": "paid",
+      "createdAt": "2024-12-28T09:15:00Z",
+      "updatedAt": "2025-01-22T16:30:00Z"
+    },
+    {
+      "id": "INV-020",
+      "invoiceNumber": "INV-020",
+      "customer": {
+        "name": "Gamma Solutions",
+        "email": "payments@gammasolutions.org",
+        "address": "1000 Gamma Way, Solution City, SC 12011"
+      },
+      "amount": 3750,
+      "dueDate": "2025-02-18",
+      "status": "draft",
+      "createdAt": "2025-01-30T11:00:00Z",
+      "updatedAt": "2025-01-30T11:00:00Z"
+    },
+    {
+      "id": "INV-021",
+      "invoiceNumber": "INV-021",
+      "customer": {
+        "name": "Delta Enterprises",
+        "email": "accounting@deltaent.co",
+        "address": "1100 Delta Dr, Enterprise Zone, EZ 13012"
+      },
+      "amount": 8500.75,
+      "dueDate": "2025-03-15",
+      "status": "pending",
+      "createdAt": "2025-01-18T14:20:00Z",
+      "updatedAt": "2025-01-18T14:20:00Z"
+    },
+    {
+      "id": "INV-022",
+      "invoiceNumber": "INV-022",
+      "customer": {
+        "name": "Epsilon Tech",
+        "email": "billing@epsilontech.io",
+        "address": "1200 Epsilon Ave, Tech Quarter, TQ 14013"
+      },
+      "amount": 2890.2,
+      "dueDate": "2025-02-22",
+      "status": "overdue",
+      "createdAt": "2024-11-15T08:45:00Z",
+      "updatedAt": "2024-11-15T08:45:00Z"
+    },
+    {
+      "id": "INV-023",
+      "invoiceNumber": "INV-023",
+      "customer": {
+        "name": "Zeta Dynamics",
+        "email": "finance@zetadynamics.com",
+        "address": "1300 Zeta St, Dynamic Plaza, DP 15014"
+      },
+      "amount": 7200.6,
+      "dueDate": "2025-03-08",
+      "status": "paid",
+      "createdAt": "2024-12-20T12:30:00Z",
+      "updatedAt": "2025-01-25T09:15:00Z"
+    },
+    {
+      "id": "INV-024",
+      "invoiceNumber": "INV-024",
+      "customer": {
+        "name": "Eta Systems",
+        "email": "accounts@etasystems.net",
+        "address": "1400 Eta Rd, System City, SC 16015"
+      },
+      "amount": 5540.85,
+      "dueDate": "2025-02-14",
+      "status": "pending",
+      "createdAt": "2025-01-08T15:00:00Z",
+      "updatedAt": "2025-01-08T15:00:00Z"
+    },
+    {
+      "id": "INV-025",
+      "invoiceNumber": "INV-025",
+      "customer": {
+        "name": "Theta Corp",
+        "email": "billing@thetacorp.org",
+        "address": "1500 Theta Blvd, Corporate Center, CC 17016"
+      },
+      "amount": 4680.9,
+      "dueDate": "2025-03-12",
+      "status": "draft",
+      "createdAt": "2025-01-26T13:45:00Z",
+      "updatedAt": "2025-01-26T13:45:00Z"
+    },
+    {
+      "id": "INV-026",
+      "invoiceNumber": "INV-026",
+      "customer": {
+        "name": "Iota Innovations",
+        "email": "payments@iotainnovations.io",
+        "address": "1600 Iota Way, Innovation Park, IP 18017"
+      },
+      "amount": 9850.4,
+      "dueDate": "2025-02-26",
+      "status": "overdue",
+      "createdAt": "2024-10-30T10:20:00Z",
+      "updatedAt": "2024-10-30T10:20:00Z"
+    },
+    {
+      "id": "INV-027",
+      "invoiceNumber": "INV-027",
+      "customer": {
+        "name": "Kappa Technologies",
+        "email": "finance@kappatech.com",
+        "address": "1700 Kappa St, Tech District, TD 19018"
+      },
+      "amount": 3120.75,
+      "dueDate": "2025-03-20",
+      "status": "pending",
+      "createdAt": "2025-01-22T11:30:00Z",
+      "updatedAt": "2025-01-22T11:30:00Z"
+    },
+    {
+      "id": "INV-028",
+      "invoiceNumber": "INV-028",
+      "customer": {
+        "name": "Lambda Solutions",
+        "email": "accounting@lambdasolutions.net",
+        "address": "1800 Lambda Dr, Solution Hub, SH 20019"
+      },
+      "amount": 6425.15,
+      "dueDate": "2025-02-16",
+      "status": "paid",
+      "createdAt": "2024-12-18T16:00:00Z",
+      "updatedAt": "2025-01-14T12:45:00Z"
+    },
+    {
+      "id": "INV-029",
+      "invoiceNumber": "INV-029",
+      "customer": {
+        "name": "Mu Enterprises",
+        "email": "billing@muenterprises.org",
+        "address": "1900 Mu Ave, Enterprise Valley, EV 21020"
+      },
+      "amount": 11200,
+      "dueDate": "2025-03-25",
+      "status": "draft",
+      "createdAt": "2025-01-31T14:10:00Z",
+      "updatedAt": "2025-01-31T14:10:00Z"
     }
   ],
   "customers": [
@@ -149,8 +345,8 @@
       "phone": "+1-555-0101",
       "address": "123 Business Ave, City, State 12345",
       "status": "active",
-      "creditLimit": 10000.00,
-      "currentBalance": 2500.00
+      "creditLimit": 10000,
+      "currentBalance": 2500
     },
     {
       "id": "CUST-002",
@@ -159,8 +355,8 @@
       "phone": "+1-555-0102",
       "address": "456 Innovation Blvd, Tech City, TC 67890",
       "status": "active",
-      "creditLimit": 15000.00,
-      "currentBalance": 0.00
+      "creditLimit": 15000,
+      "currentBalance": 0
     },
     {
       "id": "CUST-003",
@@ -169,15 +365,15 @@
       "phone": "+1-555-0103",
       "address": "789 Enterprise Way, Metro, MT 13579",
       "status": "active",
-      "creditLimit": 20000.00,
+      "creditLimit": 20000,
       "currentBalance": 1850.75
     }
   ],
   "payments": [
     {
       "id": "PAY-001",
-      "invoiceId": "INV-002",
-      "amount": 4200.50,
+      "invoiceId": null,
+      "amount": 4200.5,
       "paymentDate": "2025-01-05",
       "paymentMethod": "bank_transfer",
       "reference": "TXN-20250105-001",
@@ -185,7 +381,7 @@
     },
     {
       "id": "PAY-002",
-      "invoiceId": "INV-006",
+      "invoiceId": null,
       "amount": 1299.99,
       "paymentDate": "2025-01-08",
       "paymentMethod": "credit_card",
