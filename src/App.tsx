@@ -10,6 +10,8 @@ import TopNavbar from './components/Navigation/TopNavbar';
 import { AppProvider } from './context/AppContext';
 import './App.css';
 import InvoiceManagement from './views/InvoiceManagement';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
@@ -31,7 +33,7 @@ function App() {
               isCollapsed={sidebarCollapsed}
             />
             <div className={`flex-1 pt-16 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
-              <main className="p-8 bg-[#f3f8fd]">
+              <main className="p-4 bg-[#f3f8fd]">
                 <Routes>
                   {/* <Route path="/" element={<h1 >Customer Portal</h1>} /> */}
                   <Route path="/" element={<DashboardPage />} />
@@ -46,6 +48,18 @@ function App() {
             </div>
           </div>
         </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </Router>
     </AppProvider>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useApiData } from './useApiData';
 
 interface ActivityItem {
   id: string;
@@ -14,38 +14,17 @@ interface ActivityItem {
 }
 
 export const useRecentActivities = () => {
-  const [activities, setActivities] = useState<ActivityItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchActivities = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('http://localhost:3001/recentActivities');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch activities');
-        }
-        
-        const data: ActivityItem[] = await response.json();
-        setActivities(data);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching recent activities:', err);
-        setError('Failed to load recent activities.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchActivities();
-  }, []);
-
+  const { data, loading, error, refetch } = useApiData<ActivityItem[]>(
+    'http://localhost:3001/recentActivities',
+    {
+      errorMessage: 'Failed to load recent activities.'
+    }
+  );
 
   return {
-    activities,
+    activities: data || [],
     loading,
-    error
+    error,
+    refetch
   };
 };
