@@ -5,12 +5,12 @@
   "description": "GrowFn - Modern Accounts Receivable Automation Platform",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev:ui": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "json-server": "json-server --watch db.json --port 3001",
-    "dev:full": "concurrently \"npm run json-server\" \"npm run dev\""
+    "dev": "concurrently \"npm run json-server\" \"npm run dev:ui\""
   },
   "dependencies": {
     "@types/react-router-dom": "^5.3.3",
