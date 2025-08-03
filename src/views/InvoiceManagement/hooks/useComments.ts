@@ -22,7 +22,6 @@ export const useComments = () => {
     } catch (err) {
       const errorMessage = 'Failed to load comments. Please try again.';
       setError(errorMessage);
-      console.error('Error fetching comments:', err);
       return [];
     } finally {
       setLoading(false);
@@ -37,7 +36,6 @@ export const useComments = () => {
     } catch (err) {
       const errorMessage = 'Failed to add comment. Please try again.';
       setError(errorMessage);
-      console.error('Error adding comment:', err);
       return null;
     }
   };

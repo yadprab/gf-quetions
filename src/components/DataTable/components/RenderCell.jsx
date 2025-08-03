@@ -73,7 +73,7 @@ export const RenderCell = ({
                   await handleFieldUpdate(item.id, field, newValue);
                 }     
               } catch (error) {
-                console.error('Error in handleFieldUpdate:', error);
+                toast.error(`Failed to update ${field}`);
               }
             }, 0);
           }}

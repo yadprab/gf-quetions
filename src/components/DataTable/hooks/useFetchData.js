@@ -42,7 +42,6 @@ export const useFetchData = (endpoint, options = {}) => {
       
       setError(null);
     } catch (err) {
-      console.error(`Error fetching ${entityName}s:`, err);
       setError(`Failed to load ${entityName}s. Please try again.`);
       toast.error(`Failed to load ${entityName}s. Please try again.`);
     } finally {
@@ -91,7 +90,6 @@ export const useFetchData = (endpoint, options = {}) => {
       fetchData();
       toast.success(`${entityName}s deleted successfully`);
     } catch (err) {
-      console.error(`Error deleting ${entityName}s:`, err);
       toast.error(`Failed to delete ${entityName}s. Please try again.`);
       throw new Error(`Failed to delete ${entityName}s. Please try again.`);
     }

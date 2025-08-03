@@ -27,7 +27,6 @@ export const DataTableContainer = ({
 }) => {
   // Context and state
   const { user } = useContext(AppContext);
-  console.log(user);
   const {
     data,
     loading,
