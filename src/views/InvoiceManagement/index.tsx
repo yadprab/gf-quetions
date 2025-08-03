@@ -27,7 +27,7 @@ const InvoiceManagement = () => {
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
         <div className="w-full lg:w-3/4">
           <DataTableContainer
-            endpoint="http://localhost:3001/invoices"
+            endpoint="/invoices"
             columns={invoiceColumns}
             initialPageSize={10}
             entityName="invoice"

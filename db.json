@@ -1,20 +1,6 @@
 {
   "invoices": [
     {
-      "id": "INV-004",
-      "invoiceNumber": "INV-004",
-      "customer": {
-        "name": "Digital Dynamics",
-        "email": "billing@digitaldynamics.net",
-        "address": "321 Future St, Innovation Park, IP 24680"
-      },
-      "amount": 3100,
-      "dueDate": "2025-02-01",
-      "status": "pending",
-      "createdAt": "2025-01-01T12:00:00Z",
-      "updatedAt": "2025-01-01T12:00:00Z"
-    },
-    {
       "id": "INV-005",
       "invoiceNumber": "INV-005",
       "customer": {
@@ -24,7 +10,7 @@
       },
       "amount": 5750.25,
       "dueDate": "2025-01-25",
-      "status": "pending",
+      "status": "draft",
       "createdAt": "2024-12-25T08:30:00Z",
       "updatedAt": "2024-12-25T08:30:00Z"
     },
@@ -41,20 +27,6 @@
       "status": "draft",
       "createdAt": "2025-01-02T15:20:00Z",
       "updatedAt": "2025-01-02T15:20:00Z"
-    },
-    {
-      "id": "INV-009",
-      "invoiceNumber": "INV-009",
-      "customer": {
-        "name": "DataDriven Inc",
-        "email": "accounts@datadriven.co",
-        "address": "369 Analytics St, Data City, DC 62817"
-      },
-      "amount": 4500,
-      "dueDate": "2025-01-30",
-      "status": "draft",
-      "createdAt": "2024-12-30T10:10:00Z",
-      "updatedAt": "2024-12-30T10:10:00Z"
     },
     {
       "id": "INV-010",
@@ -485,14 +457,14 @@
   "comments": [
     {
       "id": "1",
-      "invoiceId": "INV-004",
+      "invoiceId": null,
       "author": "John Smith",
       "text": "Customer requested payment extension until Feb 15th.",
       "timestamp": "2025-01-15T14:30:00Z"
     },
     {
       "id": "2",
-      "invoiceId": "INV-004",
+      "invoiceId": null,
       "author": "Sarah Johnson",
       "text": "Extension approved. Updated internal records.",
       "timestamp": "2025-01-16T09:15:00Z"
@@ -527,7 +499,7 @@
     },
     {
       "id": "59b5",
-      "invoiceId": "INV-004",
+      "invoiceId": null,
       "author": "Test User",
       "text": "Test comment from API",
       "timestamp": "2025-08-03T10:00:00Z"
@@ -538,6 +510,104 @@
       "author": "Current User",
       "text": "Hello",
       "timestamp": "2025-08-03T06:57:20.731Z"
+    },
+    {
+      "id": "e37f",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "Custumer wants a call",
+      "timestamp": "2025-08-03T07:47:41.816Z"
+    },
+    {
+      "id": "2d5d",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "testing comment",
+      "timestamp": "2025-08-03T07:49:33.045Z"
+    },
+    {
+      "id": "8750",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "testing commets",
+      "timestamp": "2025-08-03T07:49:45.158Z"
+    },
+    {
+      "id": "677c",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "testing",
+      "timestamp": "2025-08-03T07:51:39.624Z"
+    },
+    {
+      "id": "af68",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "testing",
+      "timestamp": "2025-08-03T07:54:03.113Z"
+    },
+    {
+      "id": "ce79",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "Testing",
+      "timestamp": "2025-08-03T07:57:21.377Z"
+    },
+    {
+      "id": "f025",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "Testing",
+      "timestamp": "2025-08-03T07:59:02.494Z"
+    },
+    {
+      "id": "cbab",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "testing",
+      "timestamp": "2025-08-03T07:59:08.553Z"
+    },
+    {
+      "id": "457e",
+      "invoiceId": null,
+      "author": "Test User",
+      "text": "Test comment",
+      "timestamp": "2025-01-28T10:00:00.000Z"
+    },
+    {
+      "id": "9462",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "testing",
+      "timestamp": "2025-08-03T08:01:19.687Z"
+    },
+    {
+      "id": "d8bf",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "testing 12",
+      "timestamp": "2025-08-03T08:05:37.863Z"
+    },
+    {
+      "id": "12c2",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "test",
+      "timestamp": "2025-08-03T08:06:55.685Z"
+    },
+    {
+      "id": "83a4",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "123",
+      "timestamp": "2025-08-03T08:08:39.113Z"
+    },
+    {
+      "id": "7bb7",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "test",
+      "timestamp": "2025-08-03T08:26:41.142Z"
     }
   ]
 }

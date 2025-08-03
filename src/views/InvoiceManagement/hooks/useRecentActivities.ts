@@ -15,7 +15,7 @@ interface ActivityItem {
 
 export const useRecentActivities = () => {
   const { data, loading, error, refetch } = useApiData<ActivityItem[]>(
-    'http://localhost:3001/recentActivities',
+    '/recentActivities',
     {
       errorMessage: 'Failed to load recent activities.'
     }

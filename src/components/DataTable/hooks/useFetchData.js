@@ -1,4 +1,6 @@
 import { useState, useCallback } from 'react';
+import { toast } from 'react-toastify';
+import { api } from '../../../services/index.js';
 
 export const useFetchData = (endpoint, options = {}) => {
   const {
@@ -16,19 +18,7 @@ export const useFetchData = (endpoint, options = {}) => {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${endpoint}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      
-      const result = await response.json();
+      const result = await api.get(endpoint);
       const processedData = dataProcessor(result);
       
       setData(processedData);
@@ -54,6 +44,7 @@ export const useFetchData = (endpoint, options = {}) => {
     } catch (err) {
       console.error(`Error fetching ${entityName}s:`, err);
       setError(`Failed to load ${entityName}s. Please try again.`);
+      toast.error(`Failed to load ${entityName}s. Please try again.`);
     } finally {
       setLoading(false);
     }
@@ -81,8 +72,10 @@ export const useFetchData = (endpoint, options = {}) => {
             : item
         )
       );
+      toast.success(`${entityName} updated successfully`);
     } catch (err) {
       console.error(`Failed to update ${field}:`, err);
+      toast.error(`Failed to update ${entityName}`);
       fetchData(); // Refetch on error
     }
   }, [endpoint, entityName, fetchData]);
@@ -92,19 +85,14 @@ export const useFetchData = (endpoint, options = {}) => {
       const baseEndpoint = endpoint.includes('?') ? endpoint.split('?')[0] : endpoint;
       
       await Promise.all(
-        itemIds.map(id => 
-          fetch(`${baseEndpoint}/${id}`, { 
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-          })
-        )
+        itemIds.map(id => api.delete(`${baseEndpoint}/${id}`))
       );
       
       fetchData();
+      toast.success(`${entityName}s deleted successfully`);
     } catch (err) {
       console.error(`Error deleting ${entityName}s:`, err);
+      toast.error(`Failed to delete ${entityName}s. Please try again.`);
       throw new Error(`Failed to delete ${entityName}s. Please try again.`);
     }
   }, [endpoint, entityName, fetchData]);

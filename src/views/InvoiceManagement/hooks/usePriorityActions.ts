@@ -9,7 +9,7 @@ export interface PriorityAction {
 
 export const usePriorityActions = () => {
   const { data, loading, error, refetch } = useApiData<PriorityAction[]>(
-    'http://localhost:3001/priorityActions',
+    '/priorityActions',
     {
       errorMessage: 'Failed to load priority actions.'
     }

@@ -8,9 +8,9 @@ interface InvoiceMetricsResponse {
 
 export const useInvoiceMetrics = () => {
     const { data, loading, error, refetch } = useApiData<InvoiceMetricsResponse>(
-        'http://localhost:3001/invoiceMetricsData',
+        '/invoiceMetricsData',
         {
-            errorMessage: 'Failed to load metrics. Please try again.'
+            errorMessage: 'Failed to load invoice metrics. Please try again.'
         }
     );
 
@@ -18,6 +18,7 @@ export const useInvoiceMetrics = () => {
         metrics: data?.metrics || [],
         loading,
         error,
-        refetch
+        refetch,
+        lastUpdated: data?.lastUpdated
     };
 };

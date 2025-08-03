@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { api } from '../../../services/index.js';
 
 interface UseApiDataOptions {
   showErrorToast?: boolean;
@@ -29,13 +30,7 @@ export const useApiData = <T>(
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(endpoint);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const result: T = await response.json();
+      const result: T = await api.get(endpoint);
       setData(result);
       setError(null);
     } catch (err) {
