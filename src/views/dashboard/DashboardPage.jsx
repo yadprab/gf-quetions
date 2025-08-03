@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { fetchCustomers } from '../../services/Api';
 import { formatCurrency } from '../../utils/formatting';
+import { api } from '../../services/apiClient';
 
 const DashboardPage = ({ userId }) => {
   const [stats, setStats] = useState({});
@@ -17,7 +18,7 @@ const DashboardPage = ({ userId }) => {
         
         const [customers, activity] = await Promise.all([
           fetchCustomers(),
-          fetch(`/api/users/${userId}/activity`).then(res => res.json())
+          api.get(`/users/${userId}/activity`)
         ]);
         
         if (isMounted) {

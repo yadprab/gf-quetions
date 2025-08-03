@@ -14,7 +14,7 @@ const SideNavbar = ({ isCollapsed = false }) => {
   };
 
   const navItems = [
-    { path: '/', label: 'Dashboard', icon: <PiHouseSimple /> },
+    { path: '/dashboard', label: 'Dashboard', icon: <PiHouseSimple /> },
     { path: '/invoices', label: 'Invoices', icon: <PiFileText /> },
     { path: '/customers', label: 'Customers', icon: <PiUsers /> },
     { path: '/customer-details', label: 'Customer Details', icon: <PiUser /> },

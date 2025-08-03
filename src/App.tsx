@@ -35,8 +35,8 @@ function App() {
             <div className={`flex-1 pt-16 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
               <main className="p-4 bg-[#f3f8fd]">
                 <Routes>
-                  {/* <Route path="/" element={<h1 >Customer Portal</h1>} /> */}
-                  <Route path="/" element={<DashboardPage />} />
+                  <Route path="/" element={<Navigate to="/invoices" replace />} />
+                  <Route path="/dashboard" element={<DashboardPage />} />
                   <Route path="/invoices" element={<InvoiceManagement />} />
                   <Route path="/customers" element={<CustomerPage />} />
                   <Route path="/customer-details" element={<Details />} />
