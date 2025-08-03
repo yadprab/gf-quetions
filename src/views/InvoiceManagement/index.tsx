@@ -1,6 +1,4 @@
-// @ts-ignore
 import DataTableContainer from "../../components/DataTable/DataTableContainer.jsx";
-// @ts-ignore
 import {
   invoiceColumns,
   invoiceSearchableFields,
@@ -10,6 +8,8 @@ import {
   invoiceDataProcessor
 } from "../../components/DataTable/configurations/invoiceTableConfig.jsx";
 import InvoiceMetrics from "./invoiceMetrics";
+import RecentActivity from "./recentActivity";
+import PriorityActions from "./priorityActions.tsx";
 
 
 const InvoiceManagement = () => {
@@ -21,21 +21,31 @@ const InvoiceManagement = () => {
       </div>
 
       <div>
-        <InvoiceMetrics  />
+        <InvoiceMetrics />
       </div>
-      
-      <DataTableContainer 
-        endpoint="http://localhost:3001/invoices"
-        columns={invoiceColumns}
-        initialPageSize={10}
-        entityName="invoice"
-        dataProcessor={invoiceDataProcessor}
-        collaboratorSimulation={true}
-        searchableFields={invoiceSearchableFields}
-        defaultSort={invoiceDefaultSort}
-        bulkActions={invoiceBulkActions}
-        customFilters={invoiceCustomFilters}
-      />
+
+      <div className="flex gap-4">
+        <div className="w-3/4">
+          <DataTableContainer
+            endpoint="http://localhost:3001/invoices"
+            columns={invoiceColumns}
+            initialPageSize={10}
+            entityName="invoice"
+            dataProcessor={invoiceDataProcessor}
+            collaboratorSimulation={true}
+            searchableFields={invoiceSearchableFields}
+            defaultSort={invoiceDefaultSort}
+            bulkActions={invoiceBulkActions}
+            customFilters={invoiceCustomFilters}
+            tableTitle="Invoice Management"
+            className="mt-5 bg-white rounded-xl border border-gray-200 overflow-hidden"
+          />
+        </div>
+        <div className="mt-5 w-1/4 space-y-4">
+          <RecentActivity />
+          <PriorityActions />
+        </div>
+      </div>
     </div>
   )
 }

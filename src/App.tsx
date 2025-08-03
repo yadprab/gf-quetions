@@ -1,5 +1,5 @@
 // Main application file - last updated by dev3
-import React from 'react';
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CustomerPage } from './components/legacy/customer/CustomerPage';
 import Details from './views/CustomerDetails/CustomerDetailsPage';
@@ -12,7 +12,7 @@ import './App.css';
 import InvoiceManagement from './views/InvoiceManagement';
 
 function App() {
-  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);

@@ -23,7 +23,7 @@ export const DataTableContainer = ({
   customFilters = [],
   updateHandler = null,
   className = '',
-  style = {}
+  tableTitle = ''
 }) => {
   // Context and state
   const { user } = useContext(AppContext);
@@ -187,7 +187,7 @@ export const DataTableContainer = ({
       
   // Render the main component
   return (
-    <div style={{ padding: '20px', ...style }} className={className}>
+    <div className={`${className}`}>
       <SearchBar
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -197,21 +197,13 @@ export const DataTableContainer = ({
         filters={filters}
         setFilters={setFilters}
         fetchData={fetchData}
+        tableTitle={tableTitle}
       />
 
       {/* Data Table */}
-      <div style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '8px', 
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        overflow: 'hidden'
-      }}>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ 
-            width: '100%', 
-            borderCollapse: 'collapse',
-            minWidth: '1000px'
-          }}>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse min-w-full">
             <DataTableHeader
               columns={columns}
               bulkActions={bulkActions}

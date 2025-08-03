@@ -1,24 +1,13 @@
 import { formatValue } from "../../utils/formatting"
 import { getIcon, getChangeIndicator, getRandomGradient } from "./utils/helpers"
 import { useInvoiceMetrics } from "./hooks/useInvoiceMetrics"
+import Loader from "./components/Loader"
 
 const InvoiceMetrics = () => {
     const { metrics, loading } = useInvoiceMetrics();
 
     if (loading) {
-        return (
-            <div className="flex gap-4 mt-5">
-                {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="flex flex-col w-1/4 gap-2 bg-white p-4 rounded-lg border border-gray-200 animate-pulse">
-                        <div className="w-10 h-10 bg-gray-300 rounded-lg"></div>
-                        <div className="flex flex-col gap-2 mt-3">
-                            <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-                            <div className="h-8 bg-gray-300 rounded w-1/2"></div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        );
+        return <Loader variant="metrics" />;
     }
 
     return (

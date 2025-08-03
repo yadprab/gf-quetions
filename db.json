@@ -411,5 +411,75 @@
       }
     ],
     "lastUpdated": "2025-08-03T09:32:00Z"
-  }
+  },
+  "recentActivities": [
+    {
+      "id": "1",
+      "type": "payment_received",
+      "title": "Payment received",
+      "customer": "Acme Corp",
+      "amount": {
+        "value": 15000,
+        "unit": "USD"
+      },
+      "timestamp": "2 min ago",
+      "variant": "success"
+    },
+    {
+      "id": "2",
+      "type": "invoice_disputed",
+      "title": "Invoice disputed",
+      "customer": "TechFlow Ltd",
+      "amount": {
+        "value": 8500,
+        "unit": "USD"
+      },
+      "timestamp": "15 min ago",
+      "variant": "danger"
+    },
+    {
+      "id": "3",
+      "type": "follow_up_sent",
+      "title": "Follow-up sent",
+      "customer": "DataSync Inc",
+      "amount": {
+        "value": 12000,
+        "unit": "USD"
+      },
+      "timestamp": "1 hour ago",
+      "variant": "primary"
+    },
+    {
+      "id": "4",
+      "type": "status_updated",
+      "title": "Status updated",
+      "customer": "CloudBridge",
+      "amount": {
+        "value": 18500,
+        "unit": "USD"
+      },
+      "timestamp": "2 hours ago",
+      "variant": "warning"
+    }
+  ],
+  "priorityActions": [
+    {
+      "id": "1",
+      "title": "Follow up on overdue invoices",
+      "count": "8 invoices",
+      "priority": "high"
+    },
+    {
+      "id": "2",
+      "title": "Process dispute resolutions",
+      "count": "3 cases",
+      "priority": "medium"
+    },
+    {
+      "id": "3",
+      "title": "Send payment reminders",
+      "count": "15 customers",
+      "priority": "low"
+    }
+  ]
 }

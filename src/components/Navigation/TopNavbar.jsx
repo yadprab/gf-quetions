@@ -1,4 +1,6 @@
 import React from 'react';
+import { BsLayoutSidebar } from "react-icons/bs";
+
 
 const TopNavbar = ({ onToggleSidebar, sidebarCollapsed }) => {
   return (
@@ -9,33 +11,18 @@ const TopNavbar = ({ onToggleSidebar, sidebarCollapsed }) => {
         <div className="flex items-center space-x-4">
           <button
             onClick={onToggleSidebar}
-            className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
             aria-label="Toggle sidebar"
           >
-            <svg
-              className="w-6 h-6 text-gray-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
+            <BsLayoutSidebar className="w-5 h-5 text-gray-600" />
           </button>
-          
-          <h1 className="text-xl font-semibold text-gray-800">
-            Customer Portal
-          </h1>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="text-sm text-gray-600">
-            Welcome back!
+          <div className='flex items-center gap-2'>
+            <div className='w-7 h-7 bg-gradient-to-r from-blue-500 to-purple-500 rounded-sm flex items-center justify-center text-white text-md font-semibold'>G</div>
+            <div className='text-xl font-semibold text-gray-800'>Growfin</div>
           </div>
           
+        </div>
+        <div className="flex items-center space-x-4">
           <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
             <span className="text-white text-sm font-medium">U</span>
           </div>

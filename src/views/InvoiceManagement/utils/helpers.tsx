@@ -49,3 +49,31 @@ export const getRandomGradient = () => {
     
     return gradients[Math.floor(Math.random() * gradients.length)];
 };
+
+export const getVariantColor = (variant: 'success' | 'danger' | 'primary' | 'warning') => {
+    switch (variant) {
+        case 'success':
+            return 'text-green-600';
+        case 'danger':
+            return 'text-red-600';
+        case 'primary':
+            return 'text-blue-600';
+        case 'warning':
+            return 'text-yellow-600';
+        default:
+            return 'text-gray-600';
+    }
+};
+
+export const getPriorityColor = (priority: string) => {
+    switch (priority) {
+        case 'high':
+            return 'bg-red-500';
+        case 'medium':
+            return 'bg-yellow-500';
+        case 'low':
+            return 'bg-green-500';
+        default:
+            return 'bg-gray-500';
+    }
+};

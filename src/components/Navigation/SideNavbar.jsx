@@ -1,5 +1,10 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { PiHouseSimple } from "react-icons/pi";
+import { PiFileText } from "react-icons/pi";
+import { PiUsers } from "react-icons/pi";
+import { PiUser } from "react-icons/pi";
+import { PiGear } from "react-icons/pi";
 
 const SideNavbar = ({ isCollapsed = false }) => {
   const location = useLocation();
@@ -9,11 +14,11 @@ const SideNavbar = ({ isCollapsed = false }) => {
   };
 
   const navItems = [
-    { path: '/', label: 'Dashboard', icon: '📊' },
-    { path: '/invoices', label: 'Invoices', icon: '📄' },
-    { path: '/customers', label: 'Customers', icon: '👥' },
-    { path: '/customer-details', label: 'Customer Details', icon: '👤' },
-    { path: '/settings', label: 'Settings', icon: '⚙️' }
+    { path: '/', label: 'Dashboard', icon: <PiHouseSimple /> },
+    { path: '/invoices', label: 'Invoices', icon: <PiFileText /> },
+    { path: '/customers', label: 'Customers', icon: <PiUsers /> },
+    { path: '/customer-details', label: 'Customer Details', icon: <PiUser /> },
+    { path: '/settings', label: 'Settings', icon: <PiGear /> }
   ];
   
   return (
@@ -34,7 +39,7 @@ const SideNavbar = ({ isCollapsed = false }) => {
                 to={path}
                 className={`flex items-center px-3 py-2 rounded-md font-medium text-sm ${
                   isActive(path)
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-blue-100 '
                     : 'text-black hover:text-black hover:bg-gray-100'
                 }`}
                 title={isCollapsed ? label : ''}
