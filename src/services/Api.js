@@ -1,52 +1,27 @@
-// Bad Practice: Global state, no error handling, mixed concerns
-let authToken = '';
+// Legacy API file - now uses unified API service
+import { setAuthToken } from './apiClient.js';
+import { authAPI, customersAPI } from './index.js';
 
-// Inconsistent function naming
+// Legacy function wrappers for backward compatibility
 const setToken = (token) => {
-  authToken = token;
-  localStorage.setItem('token', token);
+  setAuthToken(token);
 };
 
-// No base URL, hardcoded endpoints
-const fetchCustomers = async () => {
-  const response = await fetch('/api/customers', {
-    headers: {
-      'Authorization': `Bearer ${authToken}`
-    }
-  });
-  return await response.json();
-};
-
-// No error handling, no TypeScript types
-const updateCustomer = async (id, data) => {
-  const response = await fetch(`/api/customers/${id}`, {
-    method: 'POST', // Should be PUT/PATCH
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${authToken}`
-    },
-    body: JSON.stringify(data)
-  });
-  return await response.json();
-};
-
-// Mixed concerns - this should be in a separate auth service
 const login = async (email, password) => {
-  const response = await fetch('/api/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ email, password })
-  });
-  const data = await response.json();
-  setToken(data.token);
-  return data.user;
+  return authAPI.login(email, password);
+};
+
+const fetchCustomers = async (params = {}) => {
+  return customersAPI.getCustomers(params);
+};
+
+const updateCustomer = async (customerId, customerData) => {
+  return customersAPI.updateCustomer(customerId, customerData);
 };
 
 export {
-  fetchCustomers,
-  updateCustomer,
   login,
-  setToken
+  setToken,
+  fetchCustomers,
+  updateCustomer
 };

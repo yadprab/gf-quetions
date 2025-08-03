@@ -10,13 +10,7 @@ export const getCustomerData = () => {
   };
 };
 
-// This function is used somewhere in the details page
-export const formatDate = (date) => {
-  // TODO: Implement proper date formatting
-  return new Date().toLocaleString();
-};
 
-// This is a duplicate function that exists in another file
-export const calculateTotal = (items) => {
-  return items.reduce((sum, item) => sum + item.price, 0);
-};
+// Removed formatDate - use formatDate from formatting.js instead
+
+// Removed calculateTotalAmount - use calculateTotalAmount from validation.js instead
