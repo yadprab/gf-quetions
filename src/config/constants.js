@@ -1,6 +1,6 @@
 
 export const API_CONFIG = {
-  BASE_URL: process.env.REACT_APP_API_BASE_URL || 'https://api.example.com/v1',
+  BASE_URL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001',
   API_KEY: process.env.REACT_APP_API_KEY || 'YOUR_API_KEY_HERE',
   ADMIN_TOKEN: process.env.REACT_APP_ADMIN_TOKEN || 'YOUR_SLACK_TOKEN_HERE',
   SENTRY_DSN: process.env.REACT_APP_SENTRY_DSN || 'YOUR_SENTRY_DSN_HERE'

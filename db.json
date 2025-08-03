@@ -481,5 +481,63 @@
       "count": "15 customers",
       "priority": "low"
     }
+  ],
+  "comments": [
+    {
+      "id": "1",
+      "invoiceId": "INV-004",
+      "author": "John Smith",
+      "text": "Customer requested payment extension until Feb 15th.",
+      "timestamp": "2025-01-15T14:30:00Z"
+    },
+    {
+      "id": "2",
+      "invoiceId": "INV-004",
+      "author": "Sarah Johnson",
+      "text": "Extension approved. Updated internal records.",
+      "timestamp": "2025-01-16T09:15:00Z"
+    },
+    {
+      "id": "3",
+      "invoiceId": "INV-005",
+      "author": "Mike Davis",
+      "text": "Customer called to dispute the amount. Need to review line items.",
+      "timestamp": "2025-01-20T11:00:00Z"
+    },
+    {
+      "id": "4",
+      "invoiceId": "INV-011",
+      "author": "Lisa Chen",
+      "text": "Multiple follow-up emails sent. Customer not responding.",
+      "timestamp": "2025-01-22T16:45:00Z"
+    },
+    {
+      "id": "5",
+      "invoiceId": "INV-011",
+      "author": "Tom Wilson",
+      "text": "Escalated to legal team for collection proceedings.",
+      "timestamp": "2025-01-25T10:20:00Z"
+    },
+    {
+      "id": "6",
+      "invoiceId": "INV-017",
+      "author": "Emma Brown",
+      "text": "Customer mentioned cash flow issues. Considering payment plan.",
+      "timestamp": "2025-01-18T13:30:00Z"
+    },
+    {
+      "id": "59b5",
+      "invoiceId": "INV-004",
+      "author": "Test User",
+      "text": "Test comment from API",
+      "timestamp": "2025-08-03T10:00:00Z"
+    },
+    {
+      "id": "43f4",
+      "invoiceId": "INV-005",
+      "author": "Current User",
+      "text": "Hello",
+      "timestamp": "2025-08-03T06:57:20.731Z"
+    }
   ]
 }

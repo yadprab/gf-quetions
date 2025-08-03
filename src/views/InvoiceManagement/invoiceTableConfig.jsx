@@ -1,8 +1,10 @@
-import React from 'react';
-import RenderCell from '../components/RenderCell';
-import { getDaysOverdue } from '../utils/helperFunctions';
+import React, { useState } from 'react';
+import RenderCell from '../../components/DataTable/components/RenderCell';
+import CommentModal from './components/CommentModal';
+import { getDaysOverdue } from '../../components/DataTable/utils/helperFunctions';
+import { FaRegCommentAlt } from "react-icons/fa";
 
-// Data processor for invoices
+
 export const invoiceDataProcessor = (invoices) => {
   const now = new Date();
   
@@ -27,7 +29,8 @@ export const invoiceColumns = [
     key: 'customer.name',
     header: 'Customer',
     sortable: true,
-    cellType: 'text'
+    cellType: 'text',
+    width: '200px'
   },
   {
     key: 'amount',
@@ -61,62 +64,30 @@ export const invoiceColumns = [
   {
     key: 'actions',
     header: 'Actions',
-    width: '200px',
-    render: (invoice, handleFieldUpdate, collaborator) => (
-      <div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            style={{
-              padding: '4px 8px',
-              backgroundColor: '#ebf8ff',
-              color: '#3182ce',
-              border: '1px solid #bee3f8',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            View
-          </button>
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            style={{
-              padding: '4px 8px',
-              backgroundColor: '#fefcbf',
-              color: '#975a16',
-              border: '1px solid #faf089',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            Edit
-          </button>
-        </div>
-        {collaborator && (
-          <div style={{ 
-            fontSize: '12px',
-            color: '#718096',
-            marginTop: '4px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}>
-            <span style={{
-              display: 'inline-block',
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: '#48bb78'
-            }}></span>
-            {collaborator.name} is {collaborator.action} this invoice
+    width: '150px',
+    render: (invoice, handleFieldUpdate) => {
+      const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+
+      return (
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <button 
+              onClick={() => {
+                setIsCommentModalOpen(true);
+              }}
+              className='text-gray-500 hover:text-gray-700 cursor-pointer'
+            >
+              <FaRegCommentAlt />
+            </button>
           </div>
-        )}
-      </div>
-    )
+          <CommentModal 
+            isOpen={isCommentModalOpen}
+            onClose={() => setIsCommentModalOpen(false)}
+            invoiceId={invoice.id}
+          />
+        </div>
+      );
+    }
   }
 ];
 

@@ -6,7 +6,7 @@ import {
   invoiceDefaultSort,
   invoiceBulkActions,
   invoiceDataProcessor
-} from "../../components/DataTable/configurations/invoiceTableConfig.jsx";
+} from "./invoiceTableConfig.jsx";
 import InvoiceMetrics from "./invoiceMetrics";
 import RecentActivity from "./recentActivity";
 import PriorityActions from "./priorityActions";
