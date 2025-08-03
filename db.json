@@ -369,24 +369,47 @@
       "currentBalance": 1850.75
     }
   ],
-  "payments": [
-    {
-      "id": "PAY-001",
-      "invoiceId": null,
-      "amount": 4200.5,
-      "paymentDate": "2025-01-05",
-      "paymentMethod": "bank_transfer",
-      "reference": "TXN-20250105-001",
-      "status": "completed"
-    },
-    {
-      "id": "PAY-002",
-      "invoiceId": null,
-      "amount": 1299.99,
-      "paymentDate": "2025-01-08",
-      "paymentMethod": "credit_card",
-      "reference": "CC-20250108-002",
-      "status": "completed"
-    }
-  ]
+  "invoiceMetricsData": {
+    "metrics": [
+      {
+        "id": "total_outstanding",
+        "title": "Total Outstanding",
+        "icon": "currency-dollar",
+        "type": "currency",
+        "value": 486250,
+        "currency": "USD",
+        "changePercent": 12.5,
+        "changeDirection": "increase"
+      },
+      {
+        "id": "collections_rate",
+        "title": "Collections Rate",
+        "icon": "trending-up",
+        "type": "percentage",
+        "value": 87.3,
+        "changePercent": 5.2,
+        "changeDirection": "increase"
+      },
+      {
+        "id": "active_customers",
+        "title": "Active Customers",
+        "icon": "users",
+        "type": "number",
+        "value": 1247,
+        "changePercent": 8.1,
+        "changeDirection": "increase"
+      },
+      {
+        "id": "avg_days_to_pay",
+        "title": "Avg. Days to Pay",
+        "icon": "clock",
+        "type": "duration",
+        "value": 32,
+        "unit": "days",
+        "changeValue": -3,
+        "changeDirection": "decrease"
+      }
+    ],
+    "lastUpdated": "2025-08-03T09:32:00Z"
+  }
 }

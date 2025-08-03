@@ -31,8 +31,22 @@ const formatName = (user) => {
   return user;
 };
 
+const formatValue = (metric) => {
+    switch (metric.type) {
+        case 'currency':
+            return `$${metric.value.toLocaleString()}`;
+        case 'percentage':
+            return `${metric.value}%`;
+        case 'duration':
+            return `${metric.value} ${metric.unit || 'days'}`;
+        case 'number':
+        default:
+            return metric.value.toLocaleString();
+    }
+};
 
-export { formatDate, formatDate2, formatCurrency };
+
+export { formatDate, formatDate2, formatCurrency, formatValue };
 
 // Adding to window object - pollutes global namespace
 window.formatUtils = {
