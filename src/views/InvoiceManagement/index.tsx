@@ -1,5 +1,5 @@
 // @ts-ignore
-import DataTableContainer from "../DataTable/DataTableContainer.jsx";
+import DataTableContainer from "../../components/DataTable/DataTableContainer.jsx";
 // @ts-ignore
 import {
   invoiceColumns,
@@ -8,13 +8,12 @@ import {
   invoiceDefaultSort,
   invoiceBulkActions,
   invoiceDataProcessor
-// @ts-ignore
-} from "../DataTable/configurations/invoiceTableConfig.jsx";
+} from "../../components/DataTable/configurations/invoiceTableConfig.jsx";
 
 const InvoiceManagement = () => {
   return (
     <div>
-      {/* @ts-ignore */}
+      
       <DataTableContainer 
         endpoint="http://localhost:3001/invoices"
         columns={invoiceColumns}

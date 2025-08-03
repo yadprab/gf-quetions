@@ -9,7 +9,7 @@ import SideNavbar from './components/Navigation/SideNavbar';
 import TopNavbar from './components/Navigation/TopNavbar';
 import { AppProvider } from './context/AppContext';
 import './App.css';
-import InvoiceManagement from './components/InvoiceManagement';
+import InvoiceManagement from './views/InvoiceManagement';
 
 function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
